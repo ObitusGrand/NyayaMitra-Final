@@ -1,0 +1,14 @@
+BHARATIYA SAKSHYA ADHINIYAM, 2023
+(Act No. 47 of 2023)
+[Effective from 1st July, 2024]
+
+An Act to consolidate the law of evidence. Replaces the Indian Evidence Act, 1872.
+
+Section 57. Admissibility of electronic records.
+The contents of electronic records may be proved in accordance with the provisions of section 63. Any information contained in an electronic record which is printed on paper, stored, recorded or copied in optical or magnetic media produced by a computer shall be deemed to be a document.
+
+Section 63. Admissibility of electronic records.
+Nothing in this Adhiniyam shall apply to deny the admissibility of an electronic record in the evidence on the ground that the electronic record is not an original, if the conditions specified are satisfied: the electronic record was created in the usual course of business, or the electronic record was created by a person having official duty.
+
+Section 39. Relevancy of statements in documents.
+Statements made by a person in a document are relevant if they relate to the existence of any state of mind or of body and such statements are made contemporaneously with the existence of such state.

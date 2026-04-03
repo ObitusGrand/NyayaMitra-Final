@@ -1,0 +1,1406 @@
+
+NYAYAMITRA
+Market-Ready Build Guide
+
+
+
+Complete Antigravity AI Prompts + Free-Tier Tech Stack + Deployment
+
+100%
+Free tier stack
+0₹
+Hosting cost
+Telegram
+Bot (not WhatsApp)
+IVR
+Feature phone calls
+Polygon
+Amoy testnet (free)
+
+Team Return 0;  —  Shreeyash Kamble  |  Jatin Chenna  |  Ninad Shitole
+Hacksagon 2026  |  ABV-IIITM Gwalior
+
+Table of Contents
+Section
+Page
+1.   What Changed — WhatsApp to Telegram + New Features
+3
+2.   Free-Tier Tech Stack — Every Tool Is Free
+4
+3.   True Legal Data Sources — Where to Get Real Indian Law
+6
+4.   Complete Feature List (Final Market-Ready Version)
+8
+5.   How to Build Using Antigravity — Step by Step
+10
+6.   PART A — Antigravity System Prompt (Master Context)
+11
+7.   PART B — Frontend Prompts (All Screens)
+14
+8.   PART C — Backend Prompts (All Endpoints)
+20
+9.   PART D — RAG + ChromaDB Prompts
+26
+10.  PART E — Telegram Bot Prompts
+28
+11.  PART F — IVR Phone Call Prompts
+30
+12.  PART G — Police Station Mode Prompts
+32
+13.  PART H — Android APK Prompts (Capacitor)
+33
+14.  PART I — Deployment Prompts (Vercel + Railway)
+34
+15.  Build Order and Checklist
+36
+
+SECTION 1 — WHAT CHANGED FROM PREVIOUS PLAN
+
+1. What Changed — Key Decisions
+
+1.1 WhatsApp Bot → Telegram Bot
+WhatsApp Business API requires a verified business account, Facebook business manager approval, and often a paid number. For students building a hackathon project, this is a barrier that wastes hours. Telegram Bot API is completely free, instant setup, no approval needed, no business account required — you get a working bot in 10 minutes with one API call.
+
+Feature
+Telegram Bot (Our Choice)
+Setup time
+10 minutes — just /newbot on @BotFather
+Cost
+100% free, always
+Approval needed
+None
+API quality
+Excellent, well-documented, Python SDK
+User reach
+900M+ Telegram users globally, growing in India
+File sharing
+Bot can send PDF documents directly in chat
+Hindi support
+Full Unicode support — Hindi works perfectly
+Webhook hosting
+Works on free Railway/Render deployment
+
+1.2 New Features Added (Market-Ready)
+New Feature
+Why It Makes This Market-Ready
+Police Station Mode
+FIR kiosk UI for citizens AND police stations — unique real-world use case
+IVR Phone Call Access
+Exotel free trial — 300M feature phone users can call for legal help
+Connect to DLSA Lawyer
+One-tap connection to free government legal aid near user's location
+Verified law data sources
+India Code API + eGazette — official government sources, not scraped
+Telegram bot
+Zero-download legal help for 900M+ Telegram users, free forever
+Trust indicators on every doc
+Law source URL, confidence score, DLSA referral — users trust the output
+
+1.3 Free-Tier Commitment
+EVERY tool in this stack has a free tier sufficient for development AND hackathon demo.
+ZERO paid subscriptions are required. Every student on the team can build this at ₹0 cost.
+The only optional cost is a Polygon MATIC testnet token — which is available from a free faucet.
+Vercel free tier: 100GB bandwidth/month. Railway free tier: 500 hours/month. Both more than enough.
+
+SECTION 2 — 100% FREE-TIER TECH STACK
+
+2. Free-Tier Tech Stack — Every Tool Is Free
+
+2.1 Frontend
+Technology
+Free Tier
+What You Get
+React 18 + Vite
+Forever free (open source)
+Complete frontend framework
+TypeScript
+Forever free (open source)
+Type safety for legal data
+Tailwind CSS
+Forever free (open source)
+Styling — no paid plans
+shadcn/ui
+Forever free (open source)
+UI component library
+Capacitor
+Forever free (open source)
+Android APK from React
+jsPDF
+Forever free (open source)
+PDF generation in browser
+ethers.js
+Forever free (open source)
+Polygon blockchain calls
+Lucide React
+Forever free (open source)
+Icons
+
+2.2 Backend
+Technology
+Free Tier
+What You Get
+FastAPI (Python)
+Forever free (open source)
+REST API server
+ChromaDB
+Forever free (open source)
+Vector DB for law embeddings
+Groq API
+Free: 14,400 req/day, 6000 tok/min
+Llama 3.3 70B — main LLM
+OpenAI Embeddings
+Free $5 credit (enough for all laws)
+text-embedding-3-small
+Sarvam AI
+Free developer tier
+Hindi/Marathi STT + TTS
+python-telegram-bot
+Forever free (open source)
+Telegram bot framework
+Exotel IVR
+Free trial: 100 minutes
+Phone call IVR for feature phones
+pdfplumber
+Forever free (open source)
+Extract text from PDF uploads
+scikit-learn
+Forever free (open source)
+Case outcome ML predictor
+
+2.3 Infrastructure and Deployment
+Service
+Free Tier
+Limit
+Vercel (Frontend)
+Free forever
+100GB bandwidth, unlimited deploys
+Railway (Backend)
+Free: 500 hrs/month
+Enough for hackathon + demo
+Render (Backend alt)
+Free: 750 hrs/month
+Auto-sleep after 15min inactivity
+Telegram Bot API
+Free forever
+No limits on messages
+Polygon Amoy Testnet
+Free — use faucet
+Unlimited test transactions
+Supabase (Database)
+Free: 500MB, 2GB bandwidth
+PostgreSQL, free forever
+Firebase FCM
+Free: unlimited push notifs
+Push notification delivery
+GitHub
+Free forever
+Code hosting + CI/CD
+Cloudinary
+Free: 25 credits/month
+Image/audio storage for IVR
+
+2.4 Free API Keys — Where to Get Each
+GROQ API KEY: Go to console.groq.com → Sign up → API Keys → Create key. Instant, no credit card.
+OPENAI API KEY: platform.openai.com → Sign up → You get $5 free credit. Enough to embed all Indian laws.
+SARVAM AI KEY: app.sarvam.ai → Sign up → Request developer access → Get key in email (takes a few hours).
+TELEGRAM BOT TOKEN: Open Telegram → Search @BotFather → /newbot → Follow steps → Get token instantly.
+EXOTEL IVR: exotel.com → Start free trial → Get virtual phone number → API key in dashboard.
+SUPABASE URL + KEY: supabase.com → New project → Settings → API → Copy URL and anon key.
+FIREBASE FCM: console.firebase.google.com → New project → Cloud Messaging → Get Server key.
+POLYGON TESTNET: Create MetaMask wallet → Switch to Amoy testnet → Get free MATIC from faucet.polygon.technology.
+
+SECTION 3 — TRUE LEGAL DATA SOURCES
+
+3. Verified Indian Law Data Sources
+For NyayaMitra to be trustworthy and market-ready, every law section cited must come from official government sources — not third-party websites, not Wikipedia, not scraped data. Here is where to get every statute.
+
+3.1 Primary Source — India Code (indiacode.nic.in)
+India Code is the official Government of India repository of all central legislation. Every Act available here is the authoritative, legally binding version. It is free, always available, and provides downloadable text files.
+
+URL: https://www.indiacode.nic.in
+Format: PDF and HTML versions available for every Act
+Authority: Ministry of Law and Justice, Government of India
+Coverage: All central Acts from 1836 to present
+How to download: Go to Act name → Click 'PDF' → Download → Convert to text using pdfplumber
+
+Download these Acts from India Code for ChromaDB:
+Bharatiya Nyaya Sanhita 2023 (BNS) — replaces IPC
+Bharatiya Nagarik Suraksha Sanhita 2023 (BNSS) — replaces CrPC
+Bharatiya Sakshya Adhiniyam 2023 (BSA) — replaces Evidence Act
+Payment of Wages Act 1936
+Industrial Disputes Act 1947
+Consumer Protection Act 2019
+Real Estate (Regulation and Development) Act 2016 — RERA
+Information Technology Act 2000
+Digital Personal Data Protection Act 2023
+Right to Information Act 2005
+Protection of Women from Domestic Violence Act 2005
+Negotiable Instruments Act 1881
+Maternity Benefit Act 1961
+Transfer of Property Act 1882
+Prevention of Sexual Harassment (POSH) Act 2013
+Maintenance and Welfare of Parents and Senior Citizens Act 2007
+Right to Education Act 2009
+Employees Provident Fund Act 1952
+Payment of Gratuity Act 1972
+
+3.2 Amendment Source — eGazette (egazette.gov.in)
+URL: https://egazette.gov.in
+Authority: Department of Publication, Ministry of Housing and Urban Affairs
+What it has: Every official gazette notification — ALL amendments are published here first
+How to use: Search by Act name, date range, or ministry — download PDF notifications
+For NyayaMitra: Scrape weekly, look for keywords: amendment, substitution, insertion, repeal
+
+3.3 Court Judgments — Indian Kanoon API
+URL: https://api.indiankanoon.org
+Coverage: 10+ million Indian court judgments from Supreme Court, High Courts, Tribunals
+Cost: Free developer tier available — sufficient for ML training data
+How to use for NyayaMitra: Download judgments by case type for ML outcome predictor training
+Registration: indiankanoon.org/api — request developer key
+
+3.4 DLSA Office Data — NALSA
+URL: https://nalsa.gov.in — National Legal Services Authority
+What it has: All District Legal Services Authority (DLSA) office addresses, contacts, jurisdictions
+How to use: Manually compile state-wise DLSA data into a JSON file for the DLSA map feature
+Alternative: Use Google Maps Places API (free tier) to locate 'district legal services authority near me'
+
+3.5 How to Convert PDF Laws to Text for ChromaDB
+# Install pdfplumber
+pip install pdfplumber
+
+# Convert downloaded PDF to text
+import pdfplumber
+
+def pdf_to_text(pdf_path: str, output_path: str):
+    with pdfplumber.open(pdf_path) as pdf:
+        text = ''
+        for page in pdf.pages:
+            extracted = page.extract_text()
+            if extracted:
+                text += extracted + '\n'
+    with open(output_path, 'w', encoding='utf-8') as f:
+        f.write(text)
+    print(f'Converted: {output_path} ({len(text)} chars)')
+
+# Convert all downloaded Acts
+acts = [
+    ('downloads/bns_2023.pdf',          'data/bns_2023.txt'),
+    ('downloads/bnss_2023.pdf',         'data/bnss_2023.txt'),
+    ('downloads/consumer_2019.pdf',     'data/consumer_2019.txt'),
+    # ... add all Acts
+]
+for src, dst in acts:
+    pdf_to_text(src, dst)
+
+# Run this ONCE on April 2nd before the hackathon starts
+
+3.6 Trust Indicators to Show in App
+Every legal answer in NyayaMitra must show where the law came from. This is what makes it trustworthy vs a generic chatbot.
+Trust Element
+How to Implement
+Source URL
+Show 'Source: indiacode.nic.in/acts/bns-2023' on every answer card
+Confidence score
+Show percentage from ChromaDB cosine similarity on every answer
+Last updated date
+Show amendment date from eGazette scraper next to each law section
+DLSA referral
+If confidence < 65%, auto-show nearest DLSA office for free legal help
+Disclaimer
+Every document footer: 'Generated from official Indian law. Verify with a lawyer for complex cases.'
+IPC to BNS note
+When citing BNS, note: 'Previously IPC Section X — updated July 1, 2024'
+
+SECTION 4 — FINAL MARKET-READY FEATURE LIST
+
+4. Complete Final Feature List
+
+4.1 Core Features (Build for Hackathon)
+[CORE]  Voice Legal Counsellor — Hindi/Marathi/English   FREE: Groq free + Sarvam AI free tier
+Speak your legal problem. RAG retrieves real law sections. LLM answers with exact citations. TTS speaks back in your language.
+
+[CORE]  Smart Document Decoder   FREE: Groq free + pdfplumber free
+Upload rent agreement, employment contract, or any legal doc. Clause-by-clause risk analysis. Green/amber/red tags. Exact Indian law citations. Counter-clause for illegal clauses.
+
+[CORE]  Legal Document Generator (47 types)   FREE: Groq free + jsPDF free + Polygon free
+From voice conversation to professionally formatted PDF legal notice in 60 seconds. Blockchain timestamped on Polygon Amoy testnet (free).
+
+[CORE]  Amendment Live Tracker   FREE: Python requests free + Groq free
+Daily scrape of eGazette.gov.in. Plain-language summary of what changed. Personal alerts when laws affecting your case change.
+
+[CORE]  Case Timeline Tracker + NyayaScore   FREE: Supabase free + React free
+Track your full legal journey. Limitation period countdown. NyayaScore 0-100 showing how legally protected you are.
+
+[NEW]  Telegram Bot — Zero Download Legal Help   FREE: Telegram Bot API free forever
+User messages NyayaMitra bot on Telegram. Gets legal analysis, document download link, DLSA location — all in Hindi, instantly.
+
+[NEW]  IVR Phone Call — Feature Phone Access   FREE: Exotel free trial (100 minutes)
+User calls a free IVR number. Speaks legal problem in Hindi. Gets spoken legal guidance. No smartphone needed. Reaches 300M feature phone users.
+
+[NEW]  Police Station Mode — FIR Kiosk   FREE: Same RAG stack, just different UI mode
+Switch to Police Station Mode. Citizen describes incident. BNS section auto-detected. FIR formatted per BNSS Section 173. Ready to print.
+
+[NEW]  Connect to DLSA Lawyer   FREE: Leaflet.js free + OpenStreetMap free
+One-tap button shows nearest DLSA (free government legal aid) offices on map. WhatsApp/call link for each office. Makes NyayaMitra a gateway to human lawyers.
+
+[NEW]  Blockchain Document Timestamp   FREE: Polygon Amoy testnet free + ethers.js free
+SHA-256 hash of every generated document written to Polygon Amoy testnet. Transaction ID in PDF footer. Tamper-proof timing proof.
+
+4.2 Future Vision (Mention in Presentation — Do NOT Build Now)
+Federated Learning for privacy-preserving model improvement
+Community Legal Knowledge Graph — mapping rights violations across India
+NyayaMitra Pro — verified advocate marketplace with DLSA integration
+NyayaMitra for Police Stations — government partnership kiosk
+
+SECTION 5 — HOW TO USE ANTIGRAVITY
+
+5. How to Build NyayaMitra Using Antigravity
+Antigravity is an AI-powered development platform. You paste a prompt describing what you want to build, and it generates the code. The prompts in this document are designed to work with Antigravity specifically — they are complete, self-contained, and ordered so each one builds on the previous.
+
+5.1 The Golden Rules for Using These Prompts
+Always start a new Antigravity session with the MASTER SYSTEM PROMPT from Section 6. This sets the full project context.
+Paste prompts in ORDER — Frontend first, then Backend, then features. Later prompts assume earlier code exists.
+After each prompt generates code, TEST IT before moving to the next prompt. Fix any errors before continuing.
+If Antigravity generates incomplete code, paste the follow-up prompt from the same section.
+Each prompt ends with: 'Use only free-tier services. No paid APIs.' — Antigravity will respect this constraint.
+
+5.2 Session Structure
+Antigravity Session
+What to Build In It
+Session 1 — Foundation
+Master prompt + Project setup + React scaffold + FastAPI scaffold
+Session 2 — RAG Core
+ChromaDB setup + Statute loader + RAG query function + Groq integration
+Session 3 — Voice Pipeline
+Sarvam AI STT/TTS + Voice page frontend + /voice/ask endpoint
+Session 4 — Documents
+Document decoder + PDF generator + Blockchain timestamp + 47 doc types
+Session 5 — Tracker + Score
+Case tracker + NyayaScore + Amendment tracker + DLSA map
+Session 6 — New Features
+Telegram bot + IVR + Police Station Mode + DLSA lawyer connect
+Session 7 — Android + Deploy
+Capacitor APK + Vercel deployment + Railway backend + final testing
+
+NOTE: Each session = one full day of building. If you have April 2nd + 36 hours, follow this order exactly.
+
+SECTION 6 — PART A: MASTER SYSTEM PROMPT
+
+6. Master System Prompt — Paste This First in Every Session
+This is the foundational context. Paste this at the START of every new Antigravity session before any other prompt. It tells Antigravity exactly what NyayaMitra is, the tech stack to use, and all constraints.
+
+MASTER CONTEXT PROMPT — Paste this first in EVERY Antigravity session
+You are building NyayaMitra — India's first AI-powered legal justice platform for common citizens.
+
+PROJECT: NyayaMitra — Web App + Android APK + Telegram Bot + IVR
+TEAM: Students (Team Return 0 — Shreeyash, Jatin, Ninad)
+EVENT: Hacksagon 2026 hackathon at ABV-IIITM Gwalior
+
+TECH STACK — MUST use only FREE-TIER services:
+Frontend: React 18 + TypeScript + Vite + Tailwind CSS + shadcn/ui + React Router v6 + Zustand + React Query
+PDF: jsPDF (client-side, no server upload of sensitive data)
+Blockchain: ethers.js + Polygon Amoy testnet (free faucet)
+Backend: Python FastAPI + uvicorn
+AI LLM: Groq API (free tier) — model: llama-3.3-70b-versatile
+Embeddings: OpenAI text-embedding-3-small (free $5 credit)
+Voice STT/TTS: Sarvam AI developer free tier (Saarika v2 STT, Bulbul v1 TTS)
+Vector DB: ChromaDB persistent (open source, local)
+Database: Supabase free tier (PostgreSQL)
+Telegram: python-telegram-bot library (free)
+IVR: Exotel free trial API
+Android: Capacitor 5 (wraps React PWA into APK)
+Deployment: Vercel (frontend, free) + Railway (backend, free)
+Icons: Lucide React
+Maps: Leaflet.js + OpenStreetMap (both free)
+
+LAW DATA SOURCES (official Indian government only):
+Acts: indiacode.nic.in (India Code — official Ministry of Law)
+Amendments: egazette.gov.in (official Government of India gazette)
+Judgments: indiankanoon.org API (free developer tier)
+DLSA offices: nalsa.gov.in data compiled into JSON
+
+COLORS: Navy #1A1A2E, Purple #534AB7, Teal #1D9E75, Amber #EF9F27
+
+KEY PRINCIPLES:
+1. Every legal answer must cite the exact Act name + Section number from ChromaDB
+2. Every answer shows a confidence score (0-100%) from ChromaDB cosine similarity
+3. If confidence < 65%, system says: consult your nearest DLSA office for free legal help
+4. Every generated document has: source URL, confidence score, disclaimer, blockchain hash
+5. App works in Hindi, Marathi, Tamil, Bengali, English
+6. All user legal data encrypted client-side (AES-256) before storage
+7. Works offline for cached content (service workers)
+
+FEATURES TO BUILD:
+Core: Voice counsellor, Document decoder, Legal doc generator (47 types),
+      Amendment tracker, Case tracker, NyayaScore
+New:  Telegram bot, IVR phone call, Police Station Mode, DLSA lawyer connect,
+      Blockchain timestamp
+
+Do NOT suggest: WhatsApp API (needs business account), paid hosting, paid APIs.
+Always use free alternatives.
+
+SECTION 7 — PART B: FRONTEND PROMPTS
+
+7. Frontend Prompts — All Screens
+
+7.1 Project Setup Prompt
+PROMPT B1 — Run this first, creates the entire project structure
+After the master context above, paste this:
+
+Create a complete React 18 + TypeScript + Vite project called 'nyayamitra-frontend' with:
+
+1. Install all dependencies:
+   npm create vite@latest nyayamitra-frontend -- --template react-ts
+   Then: react-router-dom@6, @tanstack/react-query, zustand, axios, jspdf, ethers,
+   recordrtc, lucide-react, leaflet, @types/leaflet, react-leaflet
+   tailwindcss + postcss + autoprefixer
+   shadcn/ui (init with default style, CSS variables, TypeScript)
+
+2. Create tailwind.config.js with custom colors:
+   navy: #1A1A2E, purple: #534AB7, teal: #1D9E75, amber: #EF9F27
+
+3. Create this folder structure:
+   src/pages/ — Splash, Home, VoicePage, DocDecoder, CaseTracker, Amendments, NyayaScore,
+                NegotiationCoach, PoliceStationMode, DLSAConnect
+   src/components/ — BottomNav, ClauseCard, AmendmentCard, CaseTimeline, NyayaGauge,
+                     MicButton, DocumentCard, TrustBadge
+   src/hooks/ — useVoice, useRAG, useCase, useScore
+   src/store/ — useAppStore.ts (Zustand with persist)
+   src/services/ — api.ts (all Axios calls to FastAPI)
+   src/utils/ — generatePDF.ts, blockchain.ts, crypto.ts, dlsa.ts
+   src/offline/ — legalFAQ.ts, documentTemplates.ts
+
+4. Create App.tsx with all routes and a persistent bottom navigation
+   (Home, Ask/Voice, Docs, Case) visible on all pages except Splash
+
+5. Create a .env.example file with all VITE_ variables needed
+
+Output: All file stubs with correct imports. Working npm run dev.
+
+7.2 Splash + Language Selection Screen
+PROMPT B2 — Splash screen
+Build src/pages/Splash.tsx — the first screen users see:
+
+Design: Dark navy (#1A1A2E) full screen. Center layout.
+- NyayaMitra logo (scales icon + text, purple #534AB7)
+- Tagline: 'Har Indian ka Kanuni Sahayak' (Hindi) below
+- Language selection grid (6 buttons): Hindi, Marathi, English, Tamil, Bengali, Telugu
+  - Selected language gets purple background, others are outlined
+  - Single selection only
+- 'Shuru Karen' button (purple, full width) at bottom
+  - On tap: saves language to Zustand store, navigates to /home
+- Below button: 'Free | Offline Ready | No Lawyer Needed' in small gray text
+
+State: Use useAppStore to persist selected language
+Navigation: On button click navigate to /home
+Mobile-first: Designed for 375px wide screen
+No emoji. Use Lucide React icons only.
+
+7.3 Home Dashboard Screen
+PROMPT B3 — Home dashboard
+Build src/pages/Home.tsx — the main hub screen:
+
+TOP SECTION (navy background, rounded bottom corners):
+- Greeting: 'Namaste, [userName]' in purple
+- Title: 'Aapka Kanuni Sahayak' (Your Legal Assistant)
+- Amendment Alert Card (amber, only if amendments exist in store):
+  - Shows most recent amendment title + affected case type
+  - Tap to navigate to /amendments
+
+FEATURE GRID (2x2, white cards with subtle purple border):
+Card 1: Mic icon — 'Sawaal Poochein' (Ask a Question) → /voice
+Card 2: FileText icon — 'Document Scan Karen' → /decode
+Card 3: TrendingUp icon — 'Mera Case' (My Case) → /case
+Card 4: Bell icon — 'Kanoon Badlav' (Law Changes) → /amendments
+
+QUICK ACTIONS ROW (3 pill buttons, full width):
+- 'Notice Banao' (navy) → /voice?mode=notice
+- 'FIR Likho' (teal) → /voice?mode=fir
+- 'RTI File Karo' (purple) → /voice?mode=rti
+
+TRUST BADGE (bottom, small):
+- Green dot: 'Laws from indiacode.nic.in — Official Source'
+- Link icon: 'eGazette amendments updated daily'
+
+State: Read userName, activeCases count, latestAmendment from Zustand
+
+7.4 Voice Counsellor Screen
+PROMPT B4 — Voice legal counsellor
+Build src/pages/VoicePage.tsx — full dark mode voice interface:
+
+BACKGROUND: Full dark #0F0F1A
+
+HEADER:
+- Back arrow (left) + 'Kanuni Salahkar' title + Language pill (right, tappable to switch)
+
+CHAT BUBBLES AREA (scrollable, flex-col):
+- AI bubbles: dark #1E1E2E, left-aligned, rounded (14px 14px 14px 4px)
+  - Shows: answer text in chosen language
+  - Below answer: purple badge with Act name + Section (from RAG)
+  - Green confidence score: '89% match — Payment of Wages Act'
+  - Trust source: tiny gray text 'Source: indiacode.nic.in'
+  - If low_confidence: amber warning 'Iske liye DLSA se milein' + DLSA button
+- User bubbles: purple #534AB7, right-aligned, rounded (14px 14px 4px 14px)
+
+ACTION PILLS ROW (3 pills above mic):
+- 'Notice Banao', 'FIR Draft Karo', 'DLSA Dhundho'
+- Tapping each calls generateDoc or opens DLSAConnect
+
+MIC AREA:
+- Large circular mic button (56px, purple, white mic icon from Lucide)
+- Ring animation when recording (CSS pulse, no emoji)
+- Status text: 'Baat Karein' / 'Sun raha hoon...' / 'Soch raha hoon...'
+- Waveform: 3 animated bars (CSS keyframes) while recording
+
+HOOKS: Uses useVoice hook — startRecording, stopAndProcess
+State: messages array in local state, language from Zustand
+
+7.5 Document Decoder Screen
+PROMPT B5 — Document decoder
+Build src/pages/DocDecoder.tsx — document analysis screen:
+
+HEADER: 'Document Samjho' (Understand Your Document), navy background
+
+UPLOAD ZONE (white card, dashed purple border):
+- Upload icon (Lucide UploadCloud) centered
+- Text: 'Apna document upload karein'
+- Subtext: 'PDF, Photo, WhatsApp document'
+- On tap: opens file picker (PDF + image types)
+- After upload: show file name + processing spinner
+
+TRUST NOTE (below upload):
+- Small text: 'Aapka document kabhi server par save nahi hoga'
+  (Your document is never saved on our server)
+
+CLAUSE CARDS (rendered after analysis):
+- Each card: white background, colored left border (3px):
+  GREEN border = Safe, AMBER border = Caution, RED border = Illegal
+- Card content:
+  - Risk badge (green/amber/red pill)
+  - Clause text (truncated to 2 lines, tap to expand)
+  - Plain language explanation
+  - Law citation: purple small text 'Act Name — Section X'
+  - Source URL: gray tiny text 'indiacode.nic.in'
+  - If ILLEGAL: teal 'Counter Clause' button — shows replacement text on tap
+
+BOTTOM ACTIONS:
+- 'Notice Bhejo' (purple): takes illegal clauses and generates a legal notice
+- 'PDF Download' (outlined): downloads analysis report as PDF
+
+State: clauses array, loading state, file name
+API call: POST /doc/decode with file FormData
+
+7.6 Police Station Mode Screen
+PROMPT B6 — Police Station Mode (NEW FEATURE)
+Build src/pages/PoliceStationMode.tsx — FIR kiosk for citizens AND police stations:
+
+This screen has TWO modes (toggle at top):
+Mode A: 'Nagrik Mode' (Citizen Mode) — citizen describes incident, gets FIR draft to take to police
+Mode B: 'Police Station Mode' — formatted exactly for police station use, BNSS Section 173 format
+
+HEADER: Red background (#991B1B) with police shield icon (Lucide Shield)
+Title: 'FIR Sahayata' | Mode toggle: two pills 'Nagrik' | 'Police Station'
+
+STEP 1 — Record Incident:
+- Large mic button (red theme in this mode)
+- Text: 'Ghatna batayein' (Describe the incident)
+- Auto-identifies BNS sections from voice description
+
+STEP 2 — Review BNS Sections:
+- Shows detected BNS sections as chips (e.g., BNS 303 — Theft)
+- Each chip has info icon showing full section text
+- User can remove irrelevant sections
+
+STEP 3 — Fill Details:
+- Complainant name, address, date of incident, witnesses (optional)
+- Pre-fills from voice extraction (multimodal evidence reader)
+
+STEP 4 — Generate FIR:
+- Shows formatted FIR draft per BNSS Section 173
+- Police Station Mode: adds formal headers, station fields, GD number field
+- Download PDF button
+- Blockchain timestamp button
+
+Bottom note: 'FIR dene se mana karne par: BNSS Section 175 ke tahat HC mein complaint kar sakte hain'
+(If police refuse FIR: You can complain to HC under BNSS Section 175)
+
+7.7 DLSA Lawyer Connect Screen
+PROMPT B7 — DLSA Lawyer Connect (NEW FEATURE)
+Build src/pages/DLSAConnect.tsx — connect to free government legal aid:
+
+HEADER: 'Muft Kanuni Sahayata' (Free Legal Help), teal background
+Subtext: 'DLSA — Sarkar ki muft kanuni seva' (Government's free legal service)
+
+SEARCH BAR: 'Apna shehar/pin code daalen' (Enter your city/pincode)
+- On submit: filters DLSA JSON data by district
+- Default: shows 5 nearest based on pre-loaded JSON
+
+MAP (Leaflet.js + OpenStreetMap — both free):
+- Shows pins for DLSA offices near user
+- Teal colored markers
+- Tap marker: shows office details popup
+
+OFFICE CARDS (below map):
+- Office name (District Legal Services Authority, [District])
+- Full address
+- Phone number
+- Working hours: Mon-Sat, 10AM-5PM
+- Two buttons: 'Call Karen' (green, tel: link) | 'Directions' (opens Google Maps)
+
+INFO CARD (bottom):
+- 'DLSA mein kya milta hai?' (What does DLSA provide?)
+  Free lawyer, free court filing, free legal advice — all government services
+
+Data: Load from src/offline/dlsaOffices.json (compile manually from nalsa.gov.in)
+
+7.8 NyayaScore Screen
+PROMPT B8 — NyayaScore
+Build src/pages/NyayaScore.tsx — legal health score dashboard:
+
+TOP: Large circular gauge (SVG, 200px diameter):
+- Score 0-100 shown as arc fill (purple when good, amber when medium, red when poor)
+- Score number in center (large, bold)
+- Label below: 'Aapka Kanuni Suraksha Score'
+
+COMPONENT BREAKDOWN (4 cards in 2x2 grid):
+Card 1: 'Rozgaar Suraksha' (Employment Safety) — score/25
+Card 2: 'Kiraya Suraksha' (Rental Safety) — score/25
+Card 3: 'Upbhokta Adhikar' (Consumer Rights) — score/25
+Card 4: 'Kanuni Jokhim' (Active Legal Risk) — score/25
+
+Each card shows:
+- Mini progress bar (color coded)
+- Top issue reducing score (e.g., 'Entry clause violates TPA 108c')
+- 'Theek Karen' (Fix it) button → navigates to relevant action
+
+IMPROVEMENT TIMELINE: simple line chart (Recharts free) showing
+score history over past 4 weeks
+
+SHARE CARD: 'Apna score share karein' — generates a shareable image
+card with score and NyayaMitra branding using HTML Canvas
+
+API: POST /score/compute — sends uploaded doc analysis results, gets score back
+
+SECTION 8 — PART C: BACKEND PROMPTS
+
+8. Backend Prompts — FastAPI Server
+
+8.1 Backend Project Setup
+PROMPT C1 — FastAPI project scaffold
+Create a complete FastAPI backend project called 'nyayamitra-backend':
+
+FOLDER STRUCTURE:
+nyayamitra-backend/
+  main.py              — FastAPI app with CORS, all routers mounted
+  requirements.txt     — all Python packages
+  .env.example         — all environment variable keys
+  routers/
+    voice.py           — /voice/ask, /voice/stt, /voice/tts
+    doc.py             — /doc/decode, /doc/generate, /doc/evidence
+    amendments.py      — /amendments/latest, /amendments/my
+    score.py           — /score/compute
+    telegram.py        — Telegram bot webhook
+    ivr.py             — Exotel IVR webhook
+    police.py          — /police/fir endpoint
+  rag/
+    setup_chroma.py    — ChromaDB initialization
+    load_statutes.py   — Load all Indian law texts
+    query.py           — RAG query function
+  scraper/
+    gazette_scraper.py — eGazette scraper
+    amendments_cache.json — cached amendment results
+  ml/
+    predictor.py       — case outcome predictor
+    train.py           — training script (run offline)
+  data/               — statute text files go here
+  Procfile             — for Railway deployment
+
+PACKAGES in requirements.txt:
+fastapi, uvicorn[standard], python-multipart, python-dotenv
+chromadb, openai, groq, httpx, aiofiles
+python-telegram-bot[webhooks], requests, beautifulsoup4, pdfplumber
+scikit-learn, pandas, numpy, web3
+supabase
+
+main.py must include: CORSMiddleware with allow_origins=['*']
+All routers mounted with correct prefixes
+Health check endpoint: GET / returns {status: 'NyayaMitra API running', version: '1.0'}
+Use only FREE-TIER services. No paid APIs.
+
+8.2 Voice Pipeline Endpoint
+PROMPT C2 — Complete voice endpoint (STT + RAG + TTS)
+Build routers/voice.py — complete voice legal counselling pipeline:
+
+ENDPOINT: POST /voice/ask
+Input: audio file (webm/wav/mp3), lang (hi/mr/ta/en), mode (optional: notice/fir/rti)
+Output: {question_text, answer, answer_audio_b64, confidence, acts_cited,
+         law_source_urls, low_confidence, win_probability, dlsa_recommended}
+
+PIPELINE (in exact order):
+Step 1 — STT: Send audio to Sarvam AI Saarika v2 endpoint
+  URL: https://api.sarvam.ai/speech-to-text
+  Headers: api-subscription-key: SARVAM_API_KEY
+  Body: file + language_code + model=saarika:v2
+  Returns: transcript string
+
+Step 2 — RAG: Call rag.query.rag_query(transcript, language)
+  Returns: {answer, confidence, acts_cited, low_confidence}
+
+Step 3 — Win Probability: If case type detected, call ml.predictor.predict(case_type, state)
+  Returns: win_probability (0-100 int)
+
+Step 4 — TTS: Send answer to Sarvam AI Bulbul v1 endpoint
+  URL: https://api.sarvam.ai/text-to-speech
+  Body: {inputs: [answer_text], target_language_code: lang, speaker: meera, model: bulbul:v1}
+  Returns: base64 audio
+
+Step 5 — Build law source URLs from acts_cited list:
+  Map Act name to indiacode.nic.in URL
+
+Step 6 — If low_confidence=True: set dlsa_recommended=True
+
+ERROR HANDLING: If STT returns empty string, return 400 with message in user's language
+All steps wrapped in try/except with meaningful error messages
+
+8.3 Document Generation Endpoint
+PROMPT C3 — Document decode + generate endpoints
+Build routers/doc.py with two endpoints:
+
+ENDPOINT 1: POST /doc/decode
+Input: PDF or image file upload
+Process:
+  1. If PDF: extract text using pdfplumber
+  2. If image: send to Groq vision model (llava) to extract text
+  3. Build prompt asking LLM to analyse each clause
+  4. System prompt: 'You are a legal clause analyser for Indian law.
+     For each clause return JSON array: [{clause, risk, law_act, law_section,
+     plain_hindi, plain_english, counter_clause, source_url}]
+     risk values: safe | caution | illegal
+     source_url: indiacode.nic.in URL for the cited law'
+  5. Parse JSON from LLM response
+Output: {clauses: [{...}], document_type, overall_risk}
+
+ENDPOINT 2: POST /doc/generate
+Input: {doc_type, facts, lang, state}
+  doc_type: 'salary_notice' | 'fir' | 'rti' | 'eviction_reply' | ...
+  facts: {name, employer, amount, date, address, ...}
+  lang: 'hi' | 'en' | 'mr'
+  state: 'Maharashtra' | 'Delhi' | ... (for state-specific laws)
+Process:
+  1. Get law context from RAG for this doc_type + state
+  2. Build document generation prompt with facts + law context
+  3. LLM generates: properly formatted legal document text
+  4. Include: correct salutation, factual background, law citations,
+     demand/relief, deadline, consequence of non-response
+  5. Add trust footer: source URLs, generation timestamp
+Output: {doc_text, acts_cited, source_urls, disclaimer}
+
+Create a DOC_TYPES dict mapping each type to its primary law for RAG query
+47 document types minimum (reference previous feature list)
+
+8.4 RAG Core System
+PROMPT C4 — Complete RAG system with ChromaDB
+Build rag/setup_chroma.py, rag/load_statutes.py, rag/query.py:
+
+setup_chroma.py:
+  - Initialize ChromaDB PersistentClient at path './chroma_db'
+  - Use OpenAI text-embedding-3-small embedding function
+  - Get or create collection 'indian_laws' with cosine similarity
+  - Export: client, collection
+
+load_statutes.py:
+  - Function: chunk_text(text, chunk_size=400, overlap=50)
+  - Function: load_act(filepath, act_name, source_url)
+    - Reads text file, chunks it, adds to ChromaDB
+    - metadata includes: {act, chunk_index, source_url, last_updated}
+    - IDs: f'{act_name}_chunk_{i}'
+  - STATUTES dict with all 19 Acts mapped to their files AND indiacode.nic.in URLs
+  - if __name__ == '__main__': run all loads, print count
+
+query.py:
+  - Function: rag_query(question, language='hi', n_results=3) -> dict
+  - Step 1: Query ChromaDB, get top n_results chunks + distances
+  - Step 2: confidence = round((1 - min_distance) * 100)
+  - Step 3: Build context string with [ActName] headers
+  - Step 4: Build IPC-to-BNS translation layer — if query mentions old IPC/CrPC section, auto-translate
+  - Step 5: Groq LLM call with system prompt:
+    'You are NyayaMitra, Indian legal assistant.
+     Answer ONLY using provided law sections.
+     Always cite: Act name + Section number.
+     Show source: indiacode.nic.in.
+     Respond in [language].
+     If not sure, say so and recommend DLSA.'
+  - Step 6: Extract acts_cited from metadata
+  - Step 7: Map acts to source URLs
+  - Return: {answer, confidence, acts_cited, source_urls, low_confidence}
+
+IPC_TO_BNS dict: Complete mapping of common IPC sections to BNS sections
+  e.g., {'302': 'BNS 101', '498A': 'BNS 84', '420': 'BNS 318'} — at least 30 entries
+
+8.5 Amendment Tracker Endpoint
+PROMPT C5 — Amendment tracker + gazette scraper
+Build scraper/gazette_scraper.py and routers/amendments.py:
+
+gazette_scraper.py:
+  SOURCES to scrape (use requests + BeautifulSoup):
+  1. PRS India: https://prsindia.org/bills — get recent bill activity
+  2. India Code new acts: https://www.indiacode.nic.in — check 'Recent Acts' section
+
+  For each result found:
+  1. Check if it contains amendment keywords: ['amend', 'substitut', 'insert', 'omit', 'repeal']
+  2. Extract: title, affected_act, date, gazette_number (if available)
+  3. Generate plain-language Hindi summary using Groq:
+     'Ek waqya mein batayein ki yeh kanoon badlav common Indian nagrikon ko kaise affect karta hai: [title]'
+  4. Generate plain English summary
+  5. Map to affected_case_types: labour|property|consumer|criminal|family|cyber
+  6. Add source_url pointing to official source
+
+  Save to scraper/amendments_cache.json
+  Function: run_scraper() — call all sources, deduplicate, save
+  if __name__ == '__main__': run_scraper()
+
+routers/amendments.py:
+  GET /amendments/latest — return all from cache, sorted by date desc
+  GET /amendments/my?case_types=labour,property — filter by case types
+  POST /amendments/check — given a document text, return relevant recent amendments
+
+8.6 NyayaScore Endpoint
+PROMPT C6 — NyayaScore computation
+Build routers/score.py — NyayaScore calculation:
+
+POST /score/compute
+Input: {clauses: [{risk, law_act, ...}], case_types: [string], documents_analysed: int}
+
+SCORING ALGORITHM:
+Start with 100 points. Deduct for each issue found:
+
+Employment component (max 25 points):
+- Each ILLEGAL employment clause: -8 points
+- Each CAUTION employment clause: -3 points
+- Missing PF clause in employment contract: -5 points
+- Missing gratuity clause: -3 points
+
+Rental component (max 25 points):
+- Illegal entry-without-notice clause: -10 points
+- Lock-in > 11 months (Maharashtra law): -5 points
+- Missing maintenance responsibility clause: -3 points
+- Missing security deposit receipt: -5 points
+
+Consumer rights component (max 25 points):
+- Each ILLEGAL consumer clause: -6 points
+- Forced arbitration clause present: -8 points
+
+Active risk component (max 25 points):
+- Deduct based on number of active unresolved cases
+- Approaching limitation deadline (< 30 days): -15 points
+
+Output: {
+  score: int (0-100),
+  components: {employment, rental, consumer, active_risk},
+  top_issues: [{issue, points_lost, fix_action, law_section}],
+  improvement_tips: [string]
+}
+
+SECTION 9 — PART D: RAG + DATA LOADING PROMPTS
+
+9. RAG + Data Loading Prompts
+
+PROMPT D1 — Download and prepare all statute texts
+Create a Python script 'prepare_law_data.py' that:
+
+1. Creates a backend/data/ directory
+
+2. For each of these Acts, shows the exact download URL from indiacode.nic.in
+   AND the code to download and convert to clean text:
+   - BNS 2023, BNSS 2023, BSA 2023
+   - Payment of Wages Act 1936
+   - Industrial Disputes Act 1947
+   - Consumer Protection Act 2019
+   - RERA 2016
+   - IT Act 2000
+   - DPDP Act 2023
+   - RTI Act 2005
+   - Domestic Violence Act 2005
+   - Negotiable Instruments Act 1881
+   - Maternity Benefit Act 1961
+   - Transfer of Property Act 1882
+   - POSH Act 2013
+   - EPF Act 1952
+   - Payment of Gratuity Act 1972
+   - RTE Act 2009
+   - Senior Citizens Act 2007
+
+3. Use pdfplumber to convert each PDF to clean text
+   - Remove headers, footers, page numbers using regex
+   - Keep section numbers and section text
+
+4. Create a STATUTES_MANIFEST.json with:
+   {act_name, filename, source_url, download_url, last_updated}
+   for every Act
+
+5. Print summary: total Acts loaded, total characters, estimated ChromaDB chunks
+
+This script runs ONCE on April 2nd before the hackathon.
+
+PROMPT D2 — IPC to BNS complete mapping
+Create rag/ipc_to_bns_map.py — complete mapping of old IPC/CrPC sections to new BNS/BNSS:
+
+Create a Python dict IPC_TO_BNS with at least 50 entries covering the most common sections:
+Common crimes: Murder (302→101), Culpable homicide (304→105), Attempt (307→109),
+               Assault (351→115), Theft (379→303), Robbery (390→309),
+               Dacoity (391→310), Cheating (420→318), Forgery (463→336),
+               Defamation (499→356)
+Family: Dowry death (304B→80), Cruelty by husband (498A→85), Kidnapping (363→137)
+Sexual: Rape (376→64), Molestation (354→74)
+Property: Criminal trespass (441→329), Mischief (425→324)
+Document: Counterfeiting (489A→178)
+
+Create CrPC_TO_BNSS dict with 20 most common procedural sections:
+FIR (154→173), Bail (437→478), Arrest (41→35), Search (165→185)
+
+Function: translate_section(input_text) -> str
+  - Detects IPC/CrPC section mentions in any text
+  - Returns text with BNS/BNSS equivalents added in brackets
+  - Example: 'IPC 302' becomes 'IPC 302 (now BNS Section 101 w.e.f. July 1 2024)'
+
+This function is called in rag/query.py before every LLM call.
+
+PROMPT D3 — DLSA offices JSON database
+Create src/offline/dlsaOffices.json — DLSA office data for all major districts:
+
+Create a JSON array with at least 30 DLSA office entries covering major cities in:
+Maharashtra (Mumbai, Pune, Nagpur, Nashik, Aurangabad)
+Delhi (all districts)
+Karnataka (Bengaluru, Mysuru)
+Tamil Nadu (Chennai, Coimbatore)
+Gujarat (Ahmedabad, Surat)
+Rajasthan (Jaipur)
+Uttar Pradesh (Lucknow, Kanpur)
+
+Each entry: {
+  id, district, state, office_name,
+  address, pincode, phone, email,
+  latitude, longitude,
+  working_hours, languages_supported,
+  services: ['free_lawyer', 'free_filing', 'lok_adalat', 'mediation'],
+  website_url
+}
+
+Also create src/offline/legalFAQ.ts — array of 50 common legal FAQ Q&A pairs
+covering wage disputes, tenant rights, consumer complaints, RTI basics
+in both Hindi and English — cached for offline use.
+
+Data source: nalsa.gov.in and district court websites.
+Use realistic but verifiable data (actual NALSA contact details where known).
+
+SECTION 10 — PART E: TELEGRAM BOT PROMPTS
+
+10. Telegram Bot Prompts
+
+PROMPT E1 — Telegram bot setup and BotFather instructions
+Create a complete Telegram bot for NyayaMitra using python-telegram-bot library:
+
+SETUP STEPS (include as comments in the code):
+1. Open Telegram, search @BotFather
+2. Send /newbot
+3. Name: NyayaMitra
+4. Username: NyayaMitraBot
+5. Copy the token — add to .env as TELEGRAM_BOT_TOKEN
+6. Send /setdescription — 'Free AI legal assistant for every Indian'
+7. Send /setcommands and paste these commands:
+   start - Shuru karein / Get started
+   ask - Sawaal poochein / Ask a legal question
+   notice - Legal notice banao / Generate legal notice
+   fir - FIR draft karo / Draft FIR
+   rti - RTI file karo / File RTI
+   amendments - Aaj ke kanoon badlav / Today's law changes
+   score - NyayaScore dekho / View your legal health score
+   dlsa - Muft lawyer dhundho / Find free lawyer
+   help - Madad / Help
+
+Create routers/telegram_bot.py:
+  - Webhook-based bot (not polling — webhook is better for production)
+  - Set webhook URL: https://your-backend.railway.app/telegram/webhook
+  - Handle /start: Welcome message in Hindi + English with feature list
+  - Handle /ask: Ask user to type their legal problem, route to RAG
+  - Handle /notice, /fir, /rti: Start guided conversation flow for each doc type
+  - Handle /amendments: Send last 5 amendments from cache
+  - Handle /dlsa: Ask for state, return top 3 DLSA offices
+  - Handle any plain text message: Run through RAG pipeline, return answer
+
+Add POST /telegram/webhook endpoint to mount the bot
+
+PROMPT E2 — Telegram bot conversation flows
+Extend the Telegram bot with full conversation flows using ConversationHandler:
+
+FLOW 1 — Legal Question (/ask or any text message):
+State ASK_QUESTION:
+  - Prompt: 'Apni samasya batayein (Hindi ya English mein)'
+  - On reply: Run rag_query(message, lang='hi')
+  - Send formatted response:
+    Line 1: Answer in Hindi (2-3 sentences max)
+    Line 2: (blank)
+    Line 3: 'Kanoon: [Act Name] — Section [X]'
+    Line 4: 'Source: indiacode.nic.in'
+    Line 5: 'Vishwas score: [confidence]%'
+    If low confidence: add 'Pehle DLSA se milein (free)' + /dlsa command
+  - Then show keyboard buttons: [Notice Banao] [FIR Draft] [Aur Poochein]
+
+FLOW 2 — Legal Notice (/notice):
+State NOTICE_PROBLEM: 'Kya hua batayein (salary nahi mili / eviction etc.)'
+State NOTICE_NAME: 'Aapka poora naam?'
+State NOTICE_AGAINST: 'Kiske khilaf notice? (naam aur address)'
+State NOTICE_AMOUNT: 'Kitni rashi ka mamla hai? (agar applicable)'
+State NOTICE_CONFIRM: Show summary → 'Sahi hai? Notice banayein?'
+  - On yes: Call /doc/generate API, get document text
+  - Send document as formatted message + PDF file download button
+  - Add: 'Blockchain timestamp: [hash]' line
+
+FLOW 3 — FIR Draft (/fir):
+State FIR_INCIDENT: 'Ghatna batayein'
+State FIR_DATE: 'Ghatna kab hui?'
+State FIR_LOCATION: 'Kahan hui?'
+  - Auto-detect BNS sections from incident description
+  - Generate BNSS-173 formatted FIR draft
+  - Send as message + downloadable document
+
+FLOW 4 — Amendments (/amendments):
+  - Fetch from /amendments/latest
+  - Send each as a card with: title, what changed, affected case types, source
+  - Keyboard: [Labour] [Property] [Consumer] [Criminal] for filtering
+
+SECTION 11 — PART F: IVR PHONE CALL PROMPTS
+
+11. IVR Phone Call Prompts — Exotel Free Trial
+
+PROMPT F1 — Exotel IVR setup and webhook
+Build the IVR (Interactive Voice Response) system using Exotel free trial API:
+
+EXOTEL SETUP STEPS (include as code comments):
+1. Go to exotel.com → Start Free Trial
+2. Complete KYC (Aadhaar/PAN based — instant for individuals)
+3. Get a virtual phone number (ExoPhone) — free on trial
+4. Note: EXOTEL_API_KEY, EXOTEL_API_TOKEN, EXOTEL_SID, EXOTEL_PHONE
+5. Create an 'App' in Exotel dashboard
+6. Set App URL to: https://your-backend.railway.app/ivr/incoming
+7. Assign ExoPhone to this App
+
+BUILD routers/ivr.py:
+
+POST /ivr/incoming — Called by Exotel when someone calls the IVR number
+  - Exotel sends: CallSid, From (caller number), CallType
+  - Return Exotel Applet XML to handle the call:
+  <?xml version='1.0' encoding='UTF-8'?>
+  <Response>
+    <Say voice='woman' language='hi-IN'>
+      Namaste! NyayaMitra mein aapka swagat hai.
+      Kripya beeep ke baad apni samasya boliye.
+    </Say>
+    <Record action='/ivr/process' maxLength='30'
+            playBeep='true' finishOnKey='#'/>
+  </Response>
+
+POST /ivr/process — Called after caller speaks
+  - Exotel sends: RecordingUrl (URL to audio recording)
+  - Download audio from RecordingUrl
+  - Run through Sarvam AI STT to get text
+  - Run through rag_query() to get legal answer in Hindi
+  - Run Sarvam AI TTS on answer to get audio
+  - Upload TTS audio to Cloudinary (free tier)
+  - Return Exotel XML to play the answer:
+  <Response>
+    <Play>[cloudinary_audio_url]</Play>
+    <Say language='hi-IN'>Yadi aap notice chahte hain, hamari app se sampark karein: nyayamitra.in</Say>
+    <Hangup/>
+  </Response>
+
+Handle errors gracefully — if STT fails, play default message in Hindi
+
+PROMPT F2 — IVR frontend integration
+Add IVR promotion to the NyayaMitra frontend:
+
+1. In src/pages/Home.tsx, add a card below the feature grid:
+   - Icon: Phone (Lucide)
+   - Title: 'Smart phone nahi hai? Call karein!'
+   - Subtext: 'Toll-free: [IVR_PHONE_NUMBER]'
+   - Button: 'Abhi Call Karein' — opens tel:[IVR_PHONE_NUMBER] link
+   - Note: '300 million feature phone users can access legal help via call'
+
+2. In src/pages/DLSAConnect.tsx, add IVR number prominently
+
+3. Add IVR_PHONE env variable to .env.example
+
+4. Create a simple test: POST /ivr/test
+   - Takes: {phone_number, test_message}
+   - Initiates an outbound call via Exotel API to test number
+   - Plays test_message using TTS
+   - Returns: {call_sid, status}
+   This lets you demo the IVR without waiting for inbound calls
+
+SECTION 12 — PART G: POLICE STATION MODE PROMPTS
+
+12. Police Station Mode Prompts
+
+PROMPT G1 — Police Station Mode backend
+Build routers/police.py — backend for Police Station Mode FIR feature:
+
+POST /police/identify-sections
+Input: {incident_description: string, lang: string}
+Process:
+  1. Run rag_query with 'FIR BNS sections for: ' + incident_description
+  2. Additional Groq call with specific prompt:
+     'Identify the BNS (Bharatiya Nyaya Sanhita 2023) sections applicable to this incident.
+      Return JSON: [{section: str, title: str, punishment: str, cognisable: bool}]
+      Incident: [description]
+      Use ONLY BNS sections, not IPC. Verify section numbers are correct.'
+  3. Parse JSON response, validate section numbers against known BNS section list
+Output: {sections: [{section, title, punishment, cognisable}], confidence}
+
+POST /police/generate-fir
+Input: {
+  complainant_name, complainant_address, complainant_phone,
+  incident_description, incident_date, incident_location,
+  accused_details (optional), witnesses (optional),
+  bns_sections: [string], lang: string
+}
+Process:
+  1. Build BNSS Section 173 compliant FIR format
+  2. Include all mandatory fields: station name (placeholder), GD number (blank),
+     date of report, complainant details, facts, sections applied
+  3. Add at bottom: 'Prepared with NyayaMitra AI — Verify all details before submission'
+  4. Add trust note: BNS sections sourced from indiacode.nic.in
+Output: {fir_text, sections_cited, source_urls, bnss_section_reference: '173'}
+
+POST /police/police-station-format
+Same as generate-fir but with police station specific formatting:
+  - Formal header with police department letterhead placeholder
+  - Numbered paragraph format
+  - Signature blocks for complainant, witness, officer
+  - GD number field, Station SHO field
+  - Print-ready layout instructions
+
+SECTION 13 — PART H: ANDROID APK PROMPTS
+
+13. Android APK — Capacitor Build Prompts
+
+PROMPT H1 — Complete Capacitor Android setup
+Set up Capacitor for Android APK build from the React PWA:
+
+STEP 1 — Install Capacitor packages:
+npm install @capacitor/core @capacitor/cli @capacitor/android
+npm install @capacitor/camera @capacitor/microphone
+npm install @capacitor/geolocation @capacitor/push-notifications
+npm install @capacitor/preferences   (replaces localStorage for native)
+
+STEP 2 — Create capacitor.config.ts:
+import type { CapacitorConfig } from '@capacitor/cli'
+const config: CapacitorConfig = {
+  appId: 'in.nyayamitra.app',
+  appName: 'NyayaMitra',
+  webDir: 'dist',
+  server: { androidScheme: 'https' },
+  plugins: {
+    Camera: { resultType: 'base64' },
+    PushNotifications: { presentationOptions: ['badge','sound','alert'] }
+  }
+}
+export default config
+
+STEP 3 — Commands to run in order:
+npm run build          (build React app first)
+npx cap init           (if not done already)
+npx cap add android    (add Android platform)
+npx cap copy android   (copy web build to Android)
+npx cap open android   (open in Android Studio)
+
+STEP 4 — Android permissions in AndroidManifest.xml:
+INTERNET, RECORD_AUDIO, CAMERA, READ_EXTERNAL_STORAGE,
+WRITE_EXTERNAL_STORAGE, ACCESS_FINE_LOCATION, VIBRATE,
+RECEIVE_BOOT_COMPLETED, POST_NOTIFICATIONS
+
+STEP 5 — Build APK:
+In Android Studio: Build > Build Bundle(s)/APK(s) > Build APK(s)
+APK at: android/app/build/outputs/apk/debug/app-debug.apk
+
+STEP 6 — Service Worker for offline (PWA support):
+npm install vite-plugin-pwa -D
+Configure in vite.config.ts to cache: legal FAQ, document templates, DLSA data
+
+SECTION 14 — PART I: DEPLOYMENT PROMPTS
+
+14. Deployment Prompts — Vercel + Railway (Both Free)
+
+PROMPT I1 — Frontend deployment on Vercel (free)
+Deploy the NyayaMitra React frontend to Vercel free tier:
+
+STEP 1 — Prepare for deployment:
+Create vercel.json in frontend/ root:
+{
+  'rewrites': [{ 'source': '/(.*)', 'destination': '/' }]
+}
+(This makes React Router work on Vercel — all routes return index.html)
+
+Create .env.production in frontend/:
+VITE_API_URL=https://nyayamitra-backend.railway.app
+VITE_TELEGRAM_BOT_URL=https://t.me/NyayaMitraBot
+(Replace with actual Railway URL after backend deploy)
+
+STEP 2 — Deploy via Vercel CLI:
+npm install -g vercel
+cd frontend
+vercel login   (use GitHub account)
+vercel         (follow prompts: project name 'nyayamitra', framework React)
+vercel --prod  (deploy to production)
+
+STEP 3 — Add environment variables on Vercel dashboard:
+Go to vercel.com > nyayamitra project > Settings > Environment Variables
+Add ALL VITE_ variables from .env.production
+
+STEP 4 — Auto-deploy on git push:
+Connect GitHub repo to Vercel
+Every push to main branch auto-deploys
+
+STEP 5 — Custom domain (optional, free on Vercel):
+Settings > Domains > Add 'nyayamitra.vercel.app' or custom domain
+
+STEP 6 — PWA manifest for home-screen install:
+Create public/manifest.json with name, icons, theme_color: #534AB7
+Add <link rel='manifest'> to index.html
+
+Expected result: https://nyayamitra.vercel.app live in under 5 minutes
+
+PROMPT I2 — Backend deployment on Railway (free)
+Deploy the NyayaMitra FastAPI backend to Railway free tier:
+
+STEP 1 — Prepare backend for Railway:
+Create Procfile in backend/ root:
+web: uvicorn main:app --host 0.0.0.0 --port $PORT
+
+Create runtime.txt:
+python-3.11.0
+
+Ensure requirements.txt is complete and current:
+pip freeze > requirements.txt
+
+STEP 2 — Railway setup:
+Go to railway.app > Login with GitHub
+New Project > Deploy from GitHub Repo
+Select your repo, select backend/ as root directory
+
+STEP 3 — Add environment variables on Railway:
+Go to your service > Variables
+Add ALL backend .env variables:
+GROQ_API_KEY, OPENAI_API_KEY, SARVAM_API_KEY,
+TELEGRAM_BOT_TOKEN, EXOTEL_API_KEY, EXOTEL_API_TOKEN,
+EXOTEL_SID, EXOTEL_PHONE, SUPABASE_URL, SUPABASE_KEY
+
+STEP 4 — ChromaDB persistence on Railway:
+Railway has ephemeral storage — ChromaDB will reset on redeploy.
+Solution for hackathon: Pre-load ChromaDB locally, commit chroma_db/
+to a private GitHub repo (not public), Railway pulls it on deploy.
+OR: Use Supabase pgvector instead of ChromaDB (more persistent).
+For hackathon demo: pre-loaded local ChromaDB is fine.
+
+STEP 5 — Set Telegram webhook after deploy:
+curl 'https://api.telegram.org/bot[TOKEN]/setWebhook?url=https://[RAILWAY_URL]/telegram/webhook'
+
+STEP 6 — Verify deployment:
+Visit https://[RAILWAY_URL]/ — should return {status: 'NyayaMitra API running'}
+Visit https://[RAILWAY_URL]/docs — FastAPI auto-generated API documentation
+
+Update VITE_API_URL in Vercel to this Railway URL, redeploy frontend.
+
+SECTION 15 — BUILD ORDER AND CHECKLIST
+
+15. Build Order and Checklist
+Follow this order exactly. Each step depends on the previous one.
+
+April 2 — Prep Day (Do Before Sleeping)
+[ ] Download all 19 statute PDFs from indiacode.nic.in — store in backend/data/
+[ ] Run prepare_law_data.py — convert all PDFs to text files
+[ ] Run load_statutes.py — load all laws into ChromaDB
+[ ] Verify: python -c 'from rag.setup_chroma import collection; print(collection.count())'
+[ ] Should print: 3000+ documents
+[ ] Test rag_query() manually with 5 questions — verify correct law cited
+[ ] Get all API keys: Groq, OpenAI, Sarvam AI, Telegram, Supabase
+[ ] Create @NyayaMitraBot on Telegram via BotFather — get token
+[ ] Create Exotel account — get free trial phone number
+[ ] Create .env files for both frontend and backend
+[ ] Create React project — verify npm run dev works
+[ ] Create FastAPI project — verify uvicorn starts
+[ ] Make first GitHub commit with project structure
+
+Hackathon Hours 0–12 (April 3, 6PM – April 4, 6AM)
+[ ] JATIN: /voice/ask endpoint — STT + RAG + LLM + TTS full pipeline
+[ ] SHREEYASH: VoicePage UI with mic button, chat bubbles, language switcher
+[ ] NINAD: Test voice pipeline end-to-end — Hindi question → Hindi answer
+[ ] JATIN: /doc/decode endpoint — PDF upload → clause analysis
+[ ] SHREEYASH: DocDecoder UI — upload zone + clause cards (green/amber/red)
+[ ] JATIN: /doc/generate endpoint — 5 most important doc types working
+[ ] SHREEYASH: generatePDF.ts — working PDF download with branding
+[ ] NINAD: blockchain.ts — Polygon Amoy hash write + transaction ID in PDF
+[ ] ALL: End-to-end test: speak Hindi → get answer → generate notice → download PDF
+
+Hours 12–24 (April 4, 6AM – 6PM) — Mid-eval 3PM
+[ ] JATIN: gazette_scraper.py — scrape PRS + India Code, save to cache
+[ ] SHREEYASH: Amendments page — amendment cards with diff view
+[ ] NINAD: CaseTracker page — timeline, limitation countdown, NyayaScore
+[ ] JATIN: /score/compute endpoint — working NyayaScore algorithm
+[ ] SHREEYASH: Home dashboard — amendment alert card, trust badge visible
+[ ] ALL: MID-EVAL REHEARSAL — full Raju demo, time it, fix bugs
+[ ] JATIN: Telegram bot — /start, /ask, /notice flows working
+[ ] NINAD: DLSAConnect page — DLSA map with Leaflet + real office data
+
+Hours 24–36 (April 4, 6PM – April 5, 6AM)
+[ ] JATIN: IVR webhook — Exotel incoming call → STT → RAG → TTS response
+[ ] SHREEYASH: PoliceStationMode page — Citizen + Police Station toggle
+[ ] NINAD: /police/generate-fir endpoint — BNSS 173 formatted output
+[ ] SHREEYASH: NyayaScore page — gauge component + component breakdown
+[ ] JATIN: Deploy backend to Railway — verify all endpoints work
+[ ] SHREEYASH: Deploy frontend to Vercel — verify PWA install works
+[ ] NINAD: Build Android APK — verify camera + mic work on device
+[ ] ALL: 5 FULL DEMO REHEARSALS — 4 minutes, no stumbling
+[ ] NINAD: GitHub commit history clean — meaningful commit messages
+[ ] NINAD: Submit on Devfolio before 5AM April 5
+[ ] CRITICAL: If time runs short — perfect the demo, stop adding features
+
+Final Verification Before Demo
+Check
+Expected Result
+Vercel URL loads
+React app visible, Splash screen shown
+Language selection works
+Hindi selected, navigates to Home
+Voice recording works
+Mic button records, sends to backend
+Hindi answer returned
+Legal answer with Act + Section citation
+Confidence score shows
+Percentage visible below answer
+Low confidence → DLSA
+DLSA button appears when score < 65%
+PDF generates
+Downloads with NyayaMitra branding
+Blockchain hash shows
+Transaction ID in PDF footer
+Document decoder works
+Upload rent agreement → clause cards appear
+Red clause has counter
+Counter-clause button works
+Telegram bot responds
+Message @NyayaMitraBot → gets legal answer
+IVR call works
+Call number → hears Hindi greeting → speaks → gets answer
+Police Station Mode
+Switch modes → FIR generates in BNSS format
+Android APK installs
+APK installs on phone, all features work
+DLSA map loads
+Leaflet map shows DLSA pins
+
+"NyayaMitra does not give legal advice. It gives legal ACTION."
+
+In your language. For free. From official Indian law. For every Indian who needs it.
+
+Team Return 0;  —  Shreeyash Kamble  |  Jatin Chenna  |  Ninad Shitole
+Hacksagon 2026  |  ABV-IIITM Gwalior  |  Open Innovation Track

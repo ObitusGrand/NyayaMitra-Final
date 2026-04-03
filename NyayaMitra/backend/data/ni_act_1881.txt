@@ -1,0 +1,10 @@
+THE NEGOTIABLE INSTRUMENTS ACT, 1881
+
+Section 138. Dishonour of cheque for insufficiency of funds.
+Where any cheque drawn by a person on an account maintained by him with a banker for payment of any amount of money to another person from out of that account for discharge of any debt or other liability, is returned by the bank unpaid, either because of the amount of money standing to the credit of that account is insufficient to honour the cheque or that it exceeds the amount arranged to be paid from that account by an agreement made with that bank, such person shall be deemed to have committed an offence and shall be punished with imprisonment for a term which may extend to two years, or with fine which may extend to twice the amount of the cheque, or with both.
+
+Section 139. Presumption in favour of holder.
+It shall be presumed, unless the contrary is proved, that the holder of a cheque received the cheque for the discharge, in whole or in part, of any debt or other liability.
+
+Section 142. Cognizance of offences.
+No court shall take cognizance of any offence punishable under section 138 except upon a complaint, in writing, made by the payee or the holder in due course. Such complaint must be made within one month of the cause of action arising.

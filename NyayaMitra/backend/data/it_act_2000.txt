@@ -1,0 +1,34 @@
+THE INFORMATION TECHNOLOGY ACT, 2000
+(Act No. 21 of 2000)
+
+Section 43. Penalty and compensation for damage to computer, computer system, etc.
+If any person without permission of the owner or any other person who is in-charge of a computer, computer system or computer network accesses or secures access to such computer, introduces any computer contaminant or computer virus, damages or causes to be damaged any computer, disrupts or causes disruption of any computer, denies or causes the denial of access to any person authorised to access, charges the services availed of by a person to the account of another person, he shall be liable to pay damages by way of compensation to the person so affected. Compensation up to five crore rupees.
+
+Section 43A. Compensation for failure to protect data.
+Where a body corporate, possessing, dealing or handling any sensitive personal data or information in a computer resource which it owns, controls or operates, is negligent in implementing and maintaining reasonable security practices, thereby causing wrongful loss or wrongful gain to any person, such body corporate shall be liable to pay damages by way of compensation to the person so affected.
+
+Section 66. Computer related offences.
+If any person, dishonestly or fraudulently, does any act referred to in section 43, he shall be punishable with imprisonment for a term which may extend to three years or with fine which may extend to five lakh rupees or with both.
+
+Section 66A. [Struck down by Supreme Court in Shreya Singhal v. UoI, 2015]
+
+Section 66B. Punishment for dishonestly receiving stolen computer resource or communication device.
+Imprisonment up to three years or fine up to one lakh rupees or both.
+
+Section 66C. Punishment for identity theft.
+Whoever, fraudulently or dishonestly make use of the electronic signature, password or any other unique identification feature of any other person, shall be punished with imprisonment of either description for a term which may extend to three years and shall also be liable to fine which may extend to one lakh rupees.
+
+Section 66D. Punishment for cheating by personation by using computer resource.
+Whoever, by means of any communication device or computer resource cheats by personation, shall be punished with imprisonment for a term which may extend to three years and fine up to one lakh rupees.
+
+Section 67. Punishment for publishing or transmitting obscene material in electronic form.
+Whoever publishes or transmits any material which is lascivious or appeals to the prurient interest shall be punished on first conviction with imprisonment up to three years and fine up to five lakh rupees. On second conviction up to five years and ten lakh rupees.
+
+Section 69. Power to issue directions for interception or monitoring or decryption of information.
+Where the Central Government or a State Government is satisfied that it is necessary in the interest of sovereignty or integrity of India, defence, security of the State, friendly relations with foreign States, or for preventing incitement to the commission of any cognizable offence, it may direct any agency of the appropriate Government to intercept, monitor or decrypt any information.
+
+Section 72. Breach of confidentiality and privacy.
+Any person who has secured access to any electronic record, book, register, correspondence, information, document or other material without the consent of the person concerned discloses such material to any other person, shall be punished with imprisonment up to two years or fine up to one lakh rupees or both.
+
+Section 79. Exemption from liability of intermediary in certain cases.
+An intermediary shall not be liable for any third party information, data, or communication link made available or hosted by him if the intermediary merely provides access to a communications system and does not initiate the transmission, select the receiver of the transmission, and select or modify the information contained in the transmission.

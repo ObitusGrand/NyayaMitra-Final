@@ -1,0 +1,25 @@
+DIGITAL PERSONAL DATA PROTECTION ACT, 2023
+(Act No. 22 of 2023)
+
+Section 4. Consent and legitimate uses.
+A person may process the personal data of a Data Principal only in accordance with the provisions of this Act and for a lawful purpose— for which the Data Principal has given her consent, or for certain legitimate uses.
+
+Section 5. Notice.
+Every Data Fiduciary shall, before seeking consent, give to the Data Principal an intimation in clear and plain language containing a description of personal data sought and the purpose for which it is being processed.
+
+Section 6. Consent.
+Consent given by the Data Principal shall be free, specific, informed, unconditional and unambiguous with a clear affirmative action. The Data Principal shall have the right to withdraw her consent at any time.
+
+Section 8. Rights of Data Principal.
+(1) Right to access information about personal data.
+(3) Right to correction and erasure of personal data.
+(5) Right to nominate any other individual who shall exercise the rights of the Data Principal in the event of death or incapacity.
+(7) Right of grievance redressal.
+
+Section 9. Obligations of Data Fiduciary.
+(1) A Data Fiduciary shall make reasonable efforts to ensure the accuracy and completeness of personal data.
+(4) A Data Fiduciary shall protect personal data in its possession or under its control by taking reasonable security safeguards to prevent personal data breach.
+(6) A Data Fiduciary shall, upon withdrawal of consent by the Data Principal, erase the personal data.
+
+Section 15. Penalty.
+The Board may impose monetary penalty up to two hundred and fifty crore rupees for significant data breaches arising from failure to implement reasonable security safeguards.

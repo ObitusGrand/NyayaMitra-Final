@@ -1,0 +1,71 @@
+THE CONSUMER PROTECTION ACT, 2019
+(Act No. 35 of 2019)
+[9th August, 2019]
+
+An Act to provide for protection of the interests of consumers and for the said purpose, to establish authorities for timely and effective administration and settlement of consumers' disputes.
+
+Section 1. Short title, extent, commencement and application.
+(1) This Act may be called the Consumer Protection Act, 2019.
+(2) It extends to the whole of India except the State of Jammu and Kashmir.
+
+Section 2. Definitions.
+(1) "complaint" means any allegation in writing made by a complainant for obtaining relief provided under this Act;
+(7) "consumer" means any person who buys any goods for a consideration or hires or avails of any service for a consideration which has been paid or promised or partly paid and partly promised, or under any system of deferred payment;
+(9) "defect" means any fault, imperfection or shortcoming in the quality, quantity, potency, purity or standard which is required to be maintained by or under any law;
+(11) "deficiency" means any fault, imperfection, shortcoming or inadequacy in the quality, nature and manner of performance which is required to be maintained by or under any law or has been undertaken to be performed by a person in pursuance of a contract or otherwise;
+(28) "misleading advertisement" means any advertisement which falsely describes a product or service or gives a false guarantee or is likely to mislead the consumers;
+(47) "unfair trade practice" means a trade practice which, for the purpose of promoting the sale, use or supply of any goods or provision of any service, adopts any unfair method or unfair or deceptive practice;
+
+Section 9. Consumer Disputes Redressal Agencies.
+(1) There shall be established for the purposes of this Act:
+(a) a District Consumer Disputes Redressal Forum (District Commission) in each district;
+(b) a State Consumer Disputes Redressal Commission (State Commission) in each State;
+(c) a National Consumer Disputes Redressal Commission (National Commission).
+
+Section 34. Jurisdiction of District Commission.
+(1) Subject to the other provisions of this Act, the District Commission shall have jurisdiction to entertain complaints where the value of the goods or services paid as consideration does not exceed one crore rupees.
+
+Section 35. Manner in which complaint shall be made.
+(1) Every complaint filed under this section shall be filed in the District Commission having jurisdiction.
+(2) A complaint may be filed by—
+(a) the consumer to whom such goods are sold or delivered or such service is provided;
+(b) any recognised consumer association;
+(c) the Central Government or any State Government;
+(d) the Central Authority;
+(e) one or more consumers, having the same interest;
+(f) in case of death of a consumer, his legal heir or representative.
+
+Section 38. Procedure on admission of complaint.
+(1) The District Commission shall, on admission of a complaint, refer a copy of such complaint to the opposite party mentioned in the complaint.
+(2) The opposite party shall give his version of the case within a period of thirty days or such extended period not exceeding fifteen days.
+
+Section 39. Relief which may be given by District Commission.
+(1) If the District Commission is satisfied that the goods complained against suffer from any defect or the services complained against suffer from any deficiency, it shall issue an order directing one or more of the following:
+(a) removal of defect from the goods;
+(b) replacement of the goods with new goods of similar description;
+(c) refund of the price paid;
+(d) payment of adequate compensation for any loss or injury suffered;
+(e) discontinuance of unfair trade practice or restrictive trade practice;
+(f) withdrawal of hazardous goods from sale;
+(g) adequate costs to parties.
+
+Section 47. Jurisdiction of State Commission.
+The State Commission shall have jurisdiction to entertain complaints where the value exceeds one crore rupees but does not exceed ten crore rupees.
+
+Section 58. Jurisdiction of National Commission.
+The National Commission shall have jurisdiction to entertain complaints where the value exceeds ten crore rupees.
+
+Section 69. Product Liability.
+(1) A product liability action may be brought by a complainant against a product manufacturer or a product service provider or a product seller.
+(2) A product manufacturer shall be liable in a product liability action if—
+(a) the product contains a manufacturing defect; or
+(b) the product is defective in design; or
+(c) there is a deviation from manufacturing specifications; or
+(d) the product does not conform to the express warranty.
+
+Section 84. Central Consumer Protection Authority.
+(1) The Central Government shall establish a body known as the Central Consumer Protection Authority (CCPA).
+(2) The CCPA shall protect, promote and enforce the rights of consumers as a class.
+
+Section 89. Punishment for misleading advertisement.
+The CCPA may impose a penalty of up to ten lakh rupees on a manufacturer or an endorser for a false or misleading advertisement. For every subsequent contravention, the penalty may extend to fifty lakh rupees.
