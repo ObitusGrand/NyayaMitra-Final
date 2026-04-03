@@ -19,9 +19,9 @@ beautifulsoup4==4.12.3
 pdfplumber==0.11.4
 
 # ── ML ───────────────────────────────────────────────
-scikit-learn==1.6.1
-pandas==2.2.3
-numpy==2.2.1
+scikit-learn==1.8.0
+pandas==2.3.3
+numpy==2.4.4
 
 # ── Integrations ─────────────────────────────────────
 python-telegram-bot==21.9
