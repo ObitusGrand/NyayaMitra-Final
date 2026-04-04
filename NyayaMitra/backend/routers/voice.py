@@ -30,14 +30,14 @@ SARVAM_TRANSLATE_URL = "https://api.sarvam.ai/translate"
 
 # ── Language config ──────────────────────────────────────────────────────────
 LANG_CONFIG = {
-    "hi": {"bcp47": "hi-IN", "name": "Hindi",    "speaker": "meera"},
-    "mr": {"bcp47": "mr-IN", "name": "Marathi",  "speaker": "meera"},
-    "en": {"bcp47": "en-IN", "name": "English",  "speaker": "meera"},
-    "ta": {"bcp47": "ta-IN", "name": "Tamil",    "speaker": "meera"},
-    "bn": {"bcp47": "bn-IN", "name": "Bengali",  "speaker": "meera"},
-    "te": {"bcp47": "te-IN", "name": "Telugu",   "speaker": "meera"},
-    "gu": {"bcp47": "gu-IN", "name": "Gujarati", "speaker": "meera"},
-    "kn": {"bcp47": "kn-IN", "name": "Kannada",  "speaker": "meera"},
+    "hi": {"bcp47": "hi-IN", "name": "Hindi",    "speaker": "anushka"},
+    "mr": {"bcp47": "mr-IN", "name": "Marathi",  "speaker": "anushka"},
+    "en": {"bcp47": "en-IN", "name": "English",  "speaker": "anushka"},
+    "ta": {"bcp47": "ta-IN", "name": "Tamil",    "speaker": "anushka"},
+    "bn": {"bcp47": "bn-IN", "name": "Bengali",  "speaker": "anushka"},
+    "te": {"bcp47": "te-IN", "name": "Telugu",   "speaker": "anushka"},
+    "gu": {"bcp47": "gu-IN", "name": "Gujarati", "speaker": "anushka"},
+    "kn": {"bcp47": "kn-IN", "name": "Kannada",  "speaker": "anushka"},
 }
 
 # Multilingual error messages
@@ -175,7 +175,7 @@ async def sarvam_stt(audio_bytes: bytes, lang: str = "hi",
                 SARVAM_STT_URL,
                 headers={"api-subscription-key": SARVAM_API_KEY},
                 files={"file": (filename or "audio.webm", audio_bytes, mime)},
-                data={"language_code": lang_code, "model": "saarika:v2"},
+                data={"language_code": lang_code, "model": "saarika:v2.5"},
             )
 
         if resp.status_code != 200:
@@ -233,7 +233,7 @@ async def sarvam_tts(text: str, lang: str = "hi") -> str:
                     "inputs": [tts_text],
                     "target_language_code": lang_code,
                     "speaker": speaker,
-                    "model": "bulbul:v1",
+                    "model": "bulbul:v2",
                 },
             )
 

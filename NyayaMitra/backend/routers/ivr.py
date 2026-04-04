@@ -279,7 +279,7 @@ async def stt_from_url(audio_url: str, lang: str = "hi") -> str:
                 "https://api.sarvam.ai/speech-to-text",
                 headers={"api-subscription-key": SARVAM_API_KEY},
                 files={"file": ("recording.wav", audio_bytes, "audio/wav")},
-                data={"language_code": lang_code, "model": "saarika:v2"},
+                data={"language_code": lang_code, "model": "saarika:v2.5"},
             )
 
         if stt_resp.status_code != 200:
@@ -325,8 +325,8 @@ async def tts_to_bytes(text: str, lang: str = "hi") -> bytes | None:
                 json={
                     "inputs": [clean],
                     "target_language_code": lang_code,
-                    "speaker": "meera",
-                    "model": "bulbul:v1",
+                    "speaker": "anushka",
+                    "model": "bulbul:v2",
                     "enable_preprocessing": True,
                 },
             )

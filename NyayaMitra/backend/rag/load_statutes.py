@@ -178,18 +178,18 @@ def load_act(filepath: str, act_name: str, source_url: str) -> int:
     base_path = os.path.join(os.path.dirname(__file__), "..", filepath)
 
     if not os.path.exists(base_path):
-        print(f"  ⚠ File not found: {filepath} — skipping {act_name}")
+        print(f"  [!] File not found: {filepath} -- skipping {act_name}")
         return 0
 
     with open(base_path, "r", encoding="utf-8") as f:
         text = f.read()
 
     if not text.strip():
-        print(f"  ⚠ Empty file: {filepath} — skipping {act_name}")
+        print(f"  [!] Empty file: {filepath} -- skipping {act_name}")
         return 0
 
     chunks = chunk_by_section(text)
-    print(f"  📄 {act_name}: {len(chunks)} sections/chunks from {len(text):,} chars")
+    print(f"  [*] {act_name}: {len(chunks)} sections/chunks from {len(text):,} chars")
 
     # Prepare batch data
     ids = []
@@ -226,7 +226,7 @@ if __name__ == "__main__":
     from dotenv import load_dotenv
     load_dotenv()
 
-    print("📚 NyayaMitra — Loading statutes into ChromaDB\n")
+    print("[*] NyayaMitra -- Loading statutes into ChromaDB\n")
 
     total = 0
     loaded = 0
@@ -239,6 +239,6 @@ if __name__ == "__main__":
     from rag.setup_chroma import collection
 
     print(f"\n{'='*50}")
-    print(f"✅ Acts loaded: {loaded}/{len(STATUTES)}")
-    print(f"✅ Total chunks: {total}")
-    print(f"✅ ChromaDB count: {collection.count()}")
+    print(f"[OK] Acts loaded: {loaded}/{len(STATUTES)}")
+    print(f"[OK] Total chunks: {total}")
+    print(f"[OK] ChromaDB count: {collection.count()}")
