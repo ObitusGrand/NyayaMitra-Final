@@ -6,24 +6,29 @@ import { useAppStore } from '@/store/useAppStore'
 import { computeScore } from '@/services/api'
 
 export default function NyayaScore() {
-  const { decodedClauses, cases, nyayaScore, setNyayaScore } = useAppStore()
+  const { decodedClauses, cases, nyayaScore, setNyayaScore, documentsDecoded } = useAppStore()
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState<Record<string, unknown> | null>(null)
 
   const handleCompute = async () => {
     setLoading(true)
     try {
-      const res = await computeScore({ clauses: decodedClauses, active_cases: cases.filter(c => c.status === 'active').length })
+      const res = await computeScore({ 
+        clauses: decodedClauses, 
+        active_cases: cases.filter(c => c.status === 'active').length,
+        documents_analysed: documentsDecoded
+      })
       setResult(res as unknown as Record<string, unknown>)
       setNyayaScore(res.score)
     } catch {
       const illegal = decodedClauses.filter(c => c.risk === 'illegal').length
-      const mockScore = Math.max(20, 100 - illegal * 15 - cases.filter(c => c.status === 'active').length * 3)
+      const avgIllegal = Math.ceil(illegal / Math.max(1, documentsDecoded))
+      const mockScore = Math.max(20, 100 - avgIllegal * 15 - cases.filter(c => c.status === 'active').length * 3)
       setNyayaScore(mockScore)
       setResult({
         score: mockScore,
         improvement_tips: ['Upload employment/rental agreements for clause scanning', 'Track all active cases', 'Set GROQ_API_KEY for full AI analysis'],
-        top_issues: illegal > 0 ? [{ issue: `${illegal} illegal clauses found`, points_lost: illegal * 15, fix_action: 'Get those clauses reviewed by a lawyer' }] : [],
+        top_issues: avgIllegal > 0 ? [{ issue: `${avgIllegal} illegal clauses avg/document`, points_lost: avgIllegal * 15, fix_action: 'Get those clauses reviewed by a lawyer' }] : [],
       })
     } finally { setLoading(false) }
   }

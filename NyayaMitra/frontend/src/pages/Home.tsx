@@ -61,6 +61,30 @@ export default function Home() {
         </button>
       </div>
 
+      {/* Dynamic NyayaScore Banner */}
+      {nyayaScore !== null && (
+        <div className="glass-card flex items-start gap-3 p-3 mb-4 transition-colors"
+          style={{ 
+            background: nyayaScore >= 76 ? 'rgba(52,211,153,0.05)' : nyayaScore >= 51 ? 'rgba(251,191,36,0.05)' : 'rgba(248,113,113,0.1)',
+            border: `1px solid ${nyayaScore >= 76 ? 'rgba(52,211,153,0.2)' : nyayaScore >= 51 ? 'rgba(251,191,36,0.2)' : 'rgba(248,113,113,0.4)'}`
+          }}
+        >
+          <Scale size={20} className="shrink-0 mt-0.5" style={{ color: nyayaScore >= 76 ? '#34d399' : nyayaScore >= 51 ? '#fbbf24' : '#f87171' }} />
+          <div>
+            <p className="text-sm font-semibold" style={{ color: nyayaScore >= 76 ? '#34d399' : nyayaScore >= 51 ? '#fbbf24' : '#f87171' }}>
+              {nyayaScore >= 76 ? "Legal Health Strong" : nyayaScore >= 51 ? "Moderate Legal Risk" : "CRITICAL RISK DETECTED"}
+            </p>
+            <p className="text-xs text-slate-400 mt-0.5">
+              {nyayaScore >= 76 
+                ? "Your document standing is solid. No immediate action needed." 
+                : nyayaScore >= 51 
+                  ? "Unfavorable clauses detected. Use the Negotiation Coach before signing."
+                  : "Illegal clauses or active cases detected. Please consult DLSA immediately."}
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Status bar */}
       {!backendOnline && (
         <div className="glass-card flex items-center gap-3 p-3 mb-4 border border-red-400/20"
@@ -96,10 +120,23 @@ export default function Home() {
             id={`home-action-${action.id}`}
             onClick={() => navigate(action.path)}
             className="glass-card p-4 text-left flex flex-col gap-3 active:scale-95 transition-transform"
+            style={{
+              border: (nyayaScore !== null && nyayaScore < 50 && (action.id === 'dlsa' || action.id === 'score')) 
+                      ? '1px solid rgba(248,113,113,0.5)' 
+                      : (nyayaScore !== null && nyayaScore < 76 && action.id === 'negotiate')
+                      ? '1px solid rgba(251,191,36,0.5)'
+                      : undefined,
+              boxShadow: (nyayaScore !== null && nyayaScore < 50 && (action.id === 'dlsa' || action.id === 'score'))
+                      ? '0 0 15px rgba(248,113,113,0.1)'
+                      : undefined
+            }}
           >
-            <div className="w-10 h-10 rounded-xl flex items-center justify-center"
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center relative"
               style={{ background: action.bg }}>
               <action.icon size={20} style={{ color: action.color }} />
+              {(nyayaScore !== null && nyayaScore < 50 && (action.id === 'dlsa' || action.id === 'score')) && (
+                <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full animate-pulse"></span>
+              )}
             </div>
             <div>
               <p className="text-sm font-semibold text-white">{action.label}</p>

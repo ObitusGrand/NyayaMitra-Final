@@ -141,6 +141,7 @@ class TextAskRequest(BaseModel):
     lang: str = "hi"
     mode: Optional[str] = None
     state: Optional[str] = "Central"
+    nyayaScore: Optional[int] = None
 
 
 class TranslateRequest(BaseModel):
@@ -322,6 +323,7 @@ async def voice_ask(
     lang: str = Form("hi"),
     mode: Optional[str] = Form(None),
     state: str = Form("Central"),
+    nyayaScore: Optional[int] = Form(None),
 ):
     """
     Full voice legal counselling pipeline:
@@ -359,7 +361,7 @@ async def voice_ask(
                 rag_question = f"{prefix} {question_text}"
 
         # ── Step 3: RAG Query — vector search + Groq LLM ────────────────
-        rag_result = rag_query(rag_question, lang, state=state)
+        rag_result = rag_query(rag_question, lang, state=state, nyaya_score=nyayaScore)
         logger.info(f"[VOICE] RAG confidence: {rag_result['confidence']}%, "
                      f"acts: {rag_result['acts_cited']}")
 
@@ -412,7 +414,7 @@ async def text_ask(request: TextAskRequest):
             prefix = mode_map.get(request.mode, "")
             question = f"{prefix} {question}" if prefix else question
 
-        rag_result = rag_query(question, request.lang, state=request.state)
+        rag_result = rag_query(question, request.lang, state=request.state, nyaya_score=request.nyayaScore)
         case_type = detect_case_type(question, request.lang)
         win_result = predict(
             case_type, request.state,

@@ -86,7 +86,7 @@ def extract_citations_from_answer(answer: str, metadata_acts: list[str]) -> list
     return citations
 
 
-def rag_query(question: str, language: str = "hi", n_results: int = 5, state: str = "Central") -> dict:
+def rag_query(question: str, language: str = "hi", n_results: int = 5, state: str = "Central", nyaya_score: int | None = None) -> dict:
     """
     Core RAG pipeline:
     1. Translate IPC/CrPC refs → BNS/BNSS
@@ -171,6 +171,12 @@ STRICT RULES:
 6. If not confident, recommend DLSA (District Legal Services Authority) for free legal aid.
 7. Keep answers concise: 2-3 sentences for simple, up to 5 for complex queries.
 8. Always end with: what concrete action the citizen should take next."""
+
+    if nyaya_score is not None:
+        risk_level = "strong" if nyaya_score >= 76 else "moderate" if nyaya_score >= 51 else "CRITICALLY LOW"
+        system_prompt += f"""
+9. The user asking this question has a personal NyayaScore of {nyaya_score}/100 ({risk_level} legal health). 
+If their score is CRITICALLY LOW, begin your response by urgently warning them not to sign any new contracts without review and address their vulnerability."""
 
     user_prompt = f"""Legal question: {translated_q}
 Jurisdiction/State: {state}

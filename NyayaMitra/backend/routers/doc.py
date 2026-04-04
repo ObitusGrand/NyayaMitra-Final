@@ -11,18 +11,29 @@ import os
 import re
 import json
 import logging
+from datetime import datetime
 from io import BytesIO
 from fastapi import APIRouter, UploadFile, File, HTTPException
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, Any
 import pdfplumber
 from groq import Groq
+import requests
+import traceback
+import base64
 
 from rag.query import rag_query, ACT_TO_URL
 
 logger = logging.getLogger("nyayamitra.doc")
 router = APIRouter()
 groq_client = Groq(api_key=os.getenv("GROQ_API_KEY", ""))
+
+# OCR-capable Groq vision model IDs. Override with GROQ_VISION_OCR_MODELS.
+# See Groq deprecations: Llama 3.2 vision and LLaVA preview IDs are retired.
+DEFAULT_GROQ_OCR_MODELS = [
+    "meta-llama/llama-4-scout-17b-16e-instruct",
+]
+DECOMMISSIONED_OCR_MODELS: set[str] = set()
 
 # ── Document types → primary law ──────────────────────────────────────────────
 DOC_TYPES = {
@@ -177,31 +188,165 @@ def extract_pdf_text(file_bytes: bytes) -> str:
     return "\n\n".join(text_parts)
 
 
+def get_groq_ocr_models() -> list[str]:
+    """Return OCR model priority list from env or built-in defaults."""
+    configured = [
+        m.strip()
+        for m in os.getenv("GROQ_VISION_OCR_MODELS", "").split(",")
+        if m.strip()
+    ]
+    return configured or DEFAULT_GROQ_OCR_MODELS
+
+
+def parse_json_from_llm(raw_text: str, expect_array: bool = False) -> Any:
+    """Parse JSON from LLM output even when wrapped in prose/code fences."""
+    cleaned = (raw_text or "").strip()
+    cleaned = re.sub(r"^```json?\s*", "", cleaned, flags=re.IGNORECASE)
+    cleaned = re.sub(r"```\s*$", "", cleaned).strip()
+
+    try:
+        return json.loads(cleaned)
+    except Exception:
+        pass
+
+    if expect_array:
+        start = cleaned.find("[")
+        end = cleaned.rfind("]") + 1
+    else:
+        start = cleaned.find("{")
+        end = cleaned.rfind("}") + 1
+
+    if start >= 0 and end > start:
+        return json.loads(cleaned[start:end])
+
+    raise ValueError("No JSON payload found in model response")
+
+
+def parse_indian_date(date_str: str | None) -> Optional[datetime]:
+    """Parse common Indian date formats from model/user extracted text."""
+    if not date_str:
+        return None
+
+    raw = date_str.strip()
+    if not raw:
+        return None
+
+    cleaned = re.sub(r"\s+", " ", raw).strip()
+    formats = [
+        "%d-%m-%Y", "%d/%m/%Y", "%d.%m.%Y",
+        "%d-%m-%y", "%d/%m/%y",
+        "%Y-%m-%d",
+        "%d %b %Y", "%d %B %Y",
+        "%b %d, %Y", "%B %d, %Y",
+    ]
+
+    for fmt in formats:
+        try:
+            return datetime.strptime(cleaned, fmt)
+        except ValueError:
+            continue
+    return None
+
+
+def build_deadline_summary(hearing_date: Optional[str], deadline_date: Optional[str]) -> tuple[int | None, str, str]:
+    """Build urgency classification from parsed dates."""
+    today = datetime.now().date()
+    target = parse_indian_date(deadline_date)
+    if not target:
+        target = parse_indian_date(hearing_date)
+
+    if not target:
+        return None, "unknown", "Could not parse hearing/deadline date from the document."
+
+    days_remaining = (target.date() - today).days
+    if days_remaining < 0:
+        return days_remaining, "critical", "The date appears to be in the past. Urgent legal action may be required."
+    if days_remaining <= 3:
+        return days_remaining, "critical", "Deadline is very close. Take action immediately."
+    if days_remaining <= 10:
+        return days_remaining, "high", "Deadline is approaching soon. Prepare and file your response quickly."
+    return days_remaining, "normal", "Date is not immediate, but keep preparing documents early."
+
+
 def extract_image_text(file_bytes: bytes, filename: str) -> str:
-    """Use Groq vision to extract text from image documents."""
-    import base64
+    """
+    OCR using Groq vision models first, then OCR.Space API fallback.
+    Groq models can be overridden via GROQ_VISION_OCR_MODELS.
+    """
     ext = os.path.splitext(filename.lower())[1]
     mime_map = {".jpg": "image/jpeg", ".jpeg": "image/jpeg",
                 ".png": "image/png", ".webp": "image/webp"}
     mime = mime_map.get(ext, "image/jpeg")
-    b64 = base64.b64encode(file_bytes).decode()
+    b64_str = base64.b64encode(file_bytes).decode()
 
+    # Strategy 1: Groq vision OCR (Llama 3.2 Vision / LLaVA etc.)
+    if os.getenv("GROQ_API_KEY", ""):
+        for model in get_groq_ocr_models():
+            if model in DECOMMISSIONED_OCR_MODELS:
+                continue
+            try:
+                resp = groq_client.chat.completions.create(
+                    model=model,
+                    messages=[{
+                        "role": "user",
+                        "content": [
+                            {
+                                "type": "text",
+                                "text": (
+                                    "Extract all visible text from this legal document image. "
+                                    "Preserve line breaks and do not add explanations."
+                                ),
+                            },
+                            {"type": "image_url", "image_url": {"url": f"data:{mime};base64,{b64_str}"}},
+                        ],
+                    }],
+                    temperature=0,
+                    max_tokens=2048,
+                )
+                text = (resp.choices[0].message.content or "").strip()
+                if text:
+                    logger.info(f"[OCR] Groq {model} success: {len(text)} chars extracted.")
+                    return text
+            except Exception as e:
+                msg = str(e)
+                if "model_decommissioned" in msg:
+                    DECOMMISSIONED_OCR_MODELS.add(model)
+                    logger.warning(f"[OCR] Groq {model} is decommissioned; skipping in future requests.")
+                else:
+                    logger.warning(f"[OCR] Groq {model} failed: {e}")
+
+    # Strategy 2: OCR.Space API fallback (works without Groq key)
     try:
-        resp = groq_client.chat.completions.create(
-            model="llama-3.2-90b-vision-preview",
-            messages=[{
-                "role": "user",
-                "content": [
-                    {"type": "text", "text": "Extract ALL text from this legal document image exactly as written. Preserve clause structure."},
-                    {"type": "image_url", "image_url": {"url": f"data:{mime};base64,{b64}"}},
-                ],
-            }],
-            temperature=0.1,
-            max_tokens=4096,
-        )
-        return resp.choices[0].message.content or ""
+        payload = {
+            'apikey': os.getenv('OCR_API_KEY', 'helloworld'),
+            'base64Image': f"data:{mime};base64,{b64_str}",
+            'language': 'eng',
+            'isOverlayRequired': False,
+            'OCREngine': 1, # Engine 1 is standard for free tier
+            'scale': True
+        }
+        logger.info(f"[OCR] Sending {filename} to OCR.Space...")
+        res = requests.post('https://api.ocr.space/parse/image', data=payload, timeout=25)
+        
+        if res.status_code == 200:
+            json_res = res.json()
+            if json_res.get('ParsedResults'):
+                text = json_res['ParsedResults'][0].get('ParsedText', '')
+                if text.strip():
+                    logger.info(f"[OCR] Success: {len(text)} chars extracted.")
+                    return text
+            logger.warning(f"[OCR] No text in result: {json_res.get('ErrorMessage')}")
+        else:
+            logger.error(f"[OCR] HTTP {res.status_code}: {res.text}")
     except Exception as e:
-        raise HTTPException(status_code=422, detail=f"Image text extraction failed: {str(e)}")
+        logger.warning(f"[OCR] OCR.Space failed: {e}")
+
+    return "[OCR Failed] Please upload a clearer image, PDF, or text file for analysis."
+
+
+def is_ocr_failure_text(text: str) -> bool:
+    """Detect sentinel OCR failure text so callers can return proper HTTP errors."""
+    return text.strip().startswith("[OCR Failed]")
 
 
 def split_into_clauses(text: str) -> list[str]:
@@ -523,7 +668,7 @@ async def decode_document(file: UploadFile = File(...)):
         else:
             raise HTTPException(status_code=415, detail=f"Unsupported file type: {ext}")
 
-        if not doc_text.strip():
+        if not doc_text.strip() or is_ocr_failure_text(doc_text):
             raise HTTPException(status_code=400, detail="No text found in document")
 
         logger.info(f"[DOC/decode] Extracted {len(doc_text)} chars from {filename}")
@@ -807,8 +952,14 @@ async def scan_evidence(file: UploadFile = File(...)):
             raise HTTPException(status_code=415, detail="Upload an image (JPG, PNG, WEBP)")
 
         rawtext = extract_image_text(file_bytes, filename)
-        if not rawtext.strip():
-            raise HTTPException(status_code=400, detail="Could not read image")
+        if not rawtext.strip() or is_ocr_failure_text(rawtext):
+            raise HTTPException(
+                status_code=400,
+                detail=(
+                    "OCR could not read this image. Upload a clearer image with readable text, "
+                    "or upload the original PDF/text file."
+                ),
+            )
 
         groq_key = os.getenv("GROQ_API_KEY", "")
         structured = {}
@@ -846,9 +997,7 @@ Document text:
                     max_tokens=1024,
                 )
                 resp_text = resp.choices[0].message.content or "{}"
-                resp_text = re.sub(r'^```json?\s*', '', resp_text.strip())
-                resp_text = re.sub(r'```\s*$', '', resp_text.strip())
-                structured = json.loads(resp_text)
+                structured = parse_json_from_llm(resp_text, expect_array=False)
                 suggested = structured.get("suggested_doc_type", "legal_notice")
 
                 # Build auto-fill fields for the document generator form
@@ -913,6 +1062,30 @@ class TrapDetectorResponse(BaseModel):
     total_traps: int
     safety_score: int  # 0-100
 
+
+class CourtNoticeResponse(BaseModel):
+    extracted_text: str
+    court_name: str
+    case_number: str
+    hearing_date: str
+    deadline_date: str
+    required_action: str
+    urgency_level: str
+    days_remaining: Optional[int] = None
+    risk_message: str
+    confidence: float
+
+
+class ImageQualityResponse(BaseModel):
+    quality_score: int
+    readability_score: int
+    sharpness_score: int
+    glare_score: int
+    crop_score: int
+    has_readable_text: bool
+    recommendations: list[str]
+    extracted_text_preview: str
+
 @router.post("/hidden-traps", response_model=TrapDetectorResponse)
 async def detect_hidden_traps(request: TrapDetectorRequest):
     """
@@ -962,9 +1135,7 @@ Return ONLY valid JSON array (empty [] if no traps):
                     max_tokens=2048,
                 )
                 resp_text = resp.choices[0].message.content or "[]"
-                resp_text = re.sub(r'^```json?\s*', '', resp_text.strip())
-                resp_text = re.sub(r'```\s*$', '', resp_text.strip())
-                parsed = json.loads(resp_text)
+                parsed = parse_json_from_llm(resp_text, expect_array=True)
 
                 if isinstance(parsed, list):
                     for item in parsed:
@@ -994,4 +1165,226 @@ Return ONLY valid JSON array (empty [] if no traps):
     except Exception as e:
         logger.error(f"[DOC/hidden-traps] Error: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"Trap detection error: {str(e)}")
+
+
+@router.post("/extract-deadline", response_model=CourtNoticeResponse)
+async def extract_court_deadline(file: UploadFile = File(...)):
+    """
+    Extract hearing/deadline details from court notices/summons and compute urgency.
+    Accepts PDF, image, or TXT.
+    """
+    try:
+        file_bytes = await file.read()
+        filename = file.filename or "notice.pdf"
+        if not file_bytes:
+            raise HTTPException(status_code=400, detail="Empty file uploaded")
+
+        ext = os.path.splitext(filename.lower())[1]
+        if ext == ".pdf":
+            doc_text = extract_pdf_text(file_bytes)
+        elif ext in (".jpg", ".jpeg", ".png", ".webp"):
+            doc_text = extract_image_text(file_bytes, filename)
+        elif ext == ".txt":
+            doc_text = file_bytes.decode("utf-8", errors="replace")
+        else:
+            raise HTTPException(status_code=415, detail=f"Unsupported file type: {ext}")
+
+        if not doc_text.strip() or is_ocr_failure_text(doc_text):
+            raise HTTPException(status_code=400, detail="No text found in notice")
+
+        structured = {
+            "court_name": "",
+            "case_number": "",
+            "hearing_date": "",
+            "deadline_date": "",
+            "required_action": "",
+            "confidence": 0.55,
+        }
+
+        groq_key = os.getenv("GROQ_API_KEY", "")
+        if groq_key:
+            prompt = f"""You are an Indian court notice parser.
+Extract details from this notice/summons text.
+
+Return ONLY valid JSON:
+{{
+  "court_name": "",
+  "case_number": "",
+  "hearing_date": "DD/MM/YYYY or empty",
+  "deadline_date": "DD/MM/YYYY or empty",
+  "required_action": "brief action needed",
+  "confidence": 0.0
+}}
+
+Rules:
+- Keep confidence between 0 and 1.
+- If no explicit deadline date is present, keep deadline_date empty.
+- Do not invent details.
+
+NOTICE TEXT:
+{doc_text[:5000]}"""
+            try:
+                resp = groq_client.chat.completions.create(
+                    model="llama-3.3-70b-versatile",
+                    messages=[{"role": "user", "content": prompt}],
+                    temperature=0.1,
+                    max_tokens=700,
+                )
+                parsed = parse_json_from_llm(resp.choices[0].message.content or "{}", expect_array=False)
+                if isinstance(parsed, dict):
+                    structured.update(parsed)
+            except Exception as e:
+                logger.warning(f"[DOC/extract-deadline] LLM parse failed: {e}")
+
+        days_remaining, urgency_level, risk_message = build_deadline_summary(
+            structured.get("hearing_date"),
+            structured.get("deadline_date"),
+        )
+
+        return CourtNoticeResponse(
+            extracted_text=doc_text[:2000],
+            court_name=str(structured.get("court_name", "")).strip(),
+            case_number=str(structured.get("case_number", "")).strip(),
+            hearing_date=str(structured.get("hearing_date", "")).strip(),
+            deadline_date=str(structured.get("deadline_date", "")).strip(),
+            required_action=str(structured.get("required_action", "File appearance/response as per notice")).strip(),
+            urgency_level=urgency_level,
+            days_remaining=days_remaining,
+            risk_message=risk_message,
+            confidence=float(structured.get("confidence", 0.55) or 0.55),
+        )
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"[DOC/extract-deadline] Error: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Deadline extraction error: {str(e)}")
+
+
+@router.post("/image-quality", response_model=ImageQualityResponse)
+async def assess_image_quality(file: UploadFile = File(...)):
+    """
+    Assess whether an uploaded evidence image is readable enough for legal OCR.
+    """
+    try:
+        file_bytes = await file.read()
+        filename = file.filename or "evidence.jpg"
+
+        if not file_bytes:
+            raise HTTPException(status_code=400, detail="Empty file uploaded")
+
+        ext = os.path.splitext(filename.lower())[1]
+        if ext not in (".jpg", ".jpeg", ".png", ".webp"):
+            raise HTTPException(status_code=415, detail="Upload an image (JPG, PNG, WEBP)")
+
+        text = extract_image_text(file_bytes, filename)
+        if is_ocr_failure_text(text):
+            return ImageQualityResponse(
+                quality_score=25,
+                readability_score=20,
+                sharpness_score=30,
+                glare_score=30,
+                crop_score=25,
+                has_readable_text=False,
+                recommendations=[
+                    "Retake in bright, even lighting (avoid shadows and glare).",
+                    "Keep phone parallel to page and capture full document edges.",
+                    "Ensure text is in focus; tap to focus before capturing.",
+                ],
+                extracted_text_preview="",
+            )
+
+        # Fallback heuristic baseline from OCR text volume.
+        char_count = len(text.strip())
+        lines = max(1, text.count("\n") + 1)
+        density = min(100, int((char_count / max(lines, 1)) * 1.2))
+        baseline_quality = max(40, min(92, int(0.35 * density + 55)))
+
+        result = {
+            "quality_score": baseline_quality,
+            "readability_score": baseline_quality,
+            "sharpness_score": max(35, baseline_quality - 5),
+            "glare_score": max(35, baseline_quality - 8),
+            "crop_score": max(35, baseline_quality - 6),
+            "has_readable_text": char_count > 40,
+            "recommendations": [
+                "Keep the page flat and avoid tilted perspective.",
+                "Use natural light or white LED light for better OCR.",
+            ],
+        }
+
+        groq_key = os.getenv("GROQ_API_KEY", "")
+        if groq_key:
+            mime_map = {".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".png": "image/png", ".webp": "image/webp"}
+            b64_str = base64.b64encode(file_bytes).decode()
+            mime = mime_map.get(ext, "image/jpeg")
+            quality_prompt = """Rate this image for OCR readiness.
+Return ONLY valid JSON:
+{
+  "quality_score": 0,
+  "readability_score": 0,
+  "sharpness_score": 0,
+  "glare_score": 0,
+  "crop_score": 0,
+  "has_readable_text": true,
+  "recommendations": ["..."]
+}
+Rules:
+- All scores must be integers 0-100.
+- recommendations max 3 concise items.
+- Be strict for legal-document readability.
+"""
+            try:
+                resp = groq_client.chat.completions.create(
+                    model=get_groq_ocr_models()[0],
+                    messages=[{
+                        "role": "user",
+                        "content": [
+                            {"type": "text", "text": quality_prompt},
+                            {"type": "image_url", "image_url": {"url": f"data:{mime};base64,{b64_str}"}},
+                        ],
+                    }],
+                    temperature=0,
+                    max_tokens=500,
+                )
+                parsed = parse_json_from_llm(resp.choices[0].message.content or "{}", expect_array=False)
+                if isinstance(parsed, dict):
+                    result.update(parsed)
+            except Exception as e:
+                logger.warning(f"[DOC/image-quality] Vision quality scoring failed: {e}")
+
+        # Clamp and sanitize final values.
+        def clamp_score(value: Any, default: int) -> int:
+            try:
+                return max(0, min(100, int(value)))
+            except Exception:
+                return default
+
+        quality_score = clamp_score(result.get("quality_score"), baseline_quality)
+        readability_score = clamp_score(result.get("readability_score"), baseline_quality)
+        sharpness_score = clamp_score(result.get("sharpness_score"), max(35, baseline_quality - 5))
+        glare_score = clamp_score(result.get("glare_score"), max(35, baseline_quality - 8))
+        crop_score = clamp_score(result.get("crop_score"), max(35, baseline_quality - 6))
+        has_readable_text = bool(result.get("has_readable_text", char_count > 40))
+        recommendations = result.get("recommendations") if isinstance(result.get("recommendations"), list) else []
+        if not recommendations:
+            recommendations = [
+                "Retake with document fully visible edge-to-edge.",
+                "Avoid reflections from glossy paper while capturing.",
+            ]
+
+        return ImageQualityResponse(
+            quality_score=quality_score,
+            readability_score=readability_score,
+            sharpness_score=sharpness_score,
+            glare_score=glare_score,
+            crop_score=crop_score,
+            has_readable_text=has_readable_text,
+            recommendations=[str(x) for x in recommendations[:3]],
+            extracted_text_preview=text[:600],
+        )
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"[DOC/image-quality] Error: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Image quality check error: {str(e)}")
 

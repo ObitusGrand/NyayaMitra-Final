@@ -40,13 +40,21 @@
 
 ### **Backend**
 - **FastAPI** — High-performance Python REST API
+- **Uvicorn** — ASGI server for local and production API runtime
 - **ChromaDB 1.5.5** — Vector database for law embeddings & RAG
 - **Groq API** — Free tier: 14,400 req/day, 6000 tok/min (Llama 3.3 70B)
+- **Groq Vision OCR** — `meta-llama/llama-4-scout-17b-16e-instruct` for image text extraction
+- **OCR.Space Fallback** — Reliable OCR fallback when Groq vision is unavailable
 - **OpenAI Embeddings** — text-embedding-3-small ($5 free credit)
 - **Sarvam AI** — Free Hindi/Marathi speech processing
 - **python-telegram-bot** — Telegram bot framework
 - **scikit-learn** — ML case outcome predictor
 - **pdfplumber** — PDF parsing for document analysis
+
+### **Integrations & Channels**
+- **Telegram Bot** — Chat-based legal help without app install
+- **Exotel IVR** — Voice phone workflow for feature-phone access
+- **Polygon Amoy + ethers.js** — Optional tamper-evident case metadata and trust signals
 
 ### **Data & Infrastructure**
 - **India Code API** — Official government legislation sources
@@ -122,6 +130,10 @@ The app works in limited mode without API keys. To enable all features, create `
 # Required for LLM features (free tier available)
 GROQ_API_KEY=your_groq_key_here
 OPENAI_API_KEY=your_openai_key_here
+
+# Optional: Vision OCR model priority (comma-separated)
+# Defaults in code: meta-llama/llama-4-scout-17b-16e-instruct
+GROQ_VISION_OCR_MODELS=meta-llama/llama-4-scout-17b-16e-instruct
 
 # Required for voice features (free developer tier)
 SARVAM_API_KEY=your_sarvam_key_here
@@ -220,6 +232,8 @@ NyayaMitra/
 
 ### **Legal Analysis**
 - `POST /doc/decode` — Upload PDFs, get analysis
+- `POST /doc/extract-deadline` — Extract court hearing/deadline from notice/summons
+- `POST /doc/image-quality` — Score evidence image readability before submission
 - `POST /voice/analyze` — Voice input → legal response
 - `GET /amendments/track` — Track recent law amendments
 - `POST /score/case` — Predict case outcomes (NyayaScore)

@@ -56,9 +56,11 @@ interface AppState {
   updateCase: (id: string, updates: Partial<Case>) => void
   removeCase: (id: string) => void
 
-  // Decoded clauses
+  // Decoded clauses for global score calculation
   decodedClauses: ClauseData[]
-  setDecodedClauses: (clauses: ClauseData[]) => void
+  addDecodedClauses: (clauses: ClauseData[]) => void
+  documentsDecoded: number
+  incrementDocumentsDecoded: () => void
 
   // NyayaScore
   nyayaScore: number | null
@@ -95,7 +97,10 @@ export const useAppStore = create<AppState>()(
         set((state) => ({ cases: state.cases.filter((c) => c.id !== id) })),
 
       decodedClauses: [],
-      setDecodedClauses: (decodedClauses) => set({ decodedClauses }),
+      addDecodedClauses: (newClauses) => set((state) => ({ decodedClauses: [...state.decodedClauses, ...newClauses] })),
+      
+      documentsDecoded: 0,
+      incrementDocumentsDecoded: () => set((state) => ({ documentsDecoded: state.documentsDecoded + 1 })),
 
       nyayaScore: null,
       setNyayaScore: (nyayaScore) => set({ nyayaScore }),
@@ -112,6 +117,8 @@ export const useAppStore = create<AppState>()(
         language: state.language,
         userState: state.userState,
         cases: state.cases,
+        decodedClauses: state.decodedClauses,
+        documentsDecoded: state.documentsDecoded,
         nyayaScore: state.nyayaScore,
       }),
     }

@@ -25,7 +25,7 @@ const FALLBACK_DOC_TYPES = [
 ]
 
 export default function DocDecoder() {
-  const { language, setDecodedClauses } = useAppStore()
+  const { language } = useAppStore()
   const [decodeResult, setDecodeResult] = useState<DecodeResponse | null>(null)
   const [generated, setGenerated] = useState<GenerateResponse | null>(null)
   const [loading, setLoading] = useState(false)
@@ -61,7 +61,8 @@ export default function DocDecoder() {
     try {
       const res = await decodeDocument(file)
       setDecodeResult(res)
-      setDecodedClauses(res.clauses)
+      useAppStore.getState().addDecodedClauses(res.clauses)
+      useAppStore.getState().incrementDocumentsDecoded()
     } catch (e: unknown) {
       const err = e as { response?: { data?: { detail?: string } } }
       setError(err?.response?.data?.detail || 'Failed to decode document')

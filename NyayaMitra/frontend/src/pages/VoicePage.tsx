@@ -16,7 +16,7 @@ const SAMPLE_QUESTIONS: Record<string, string> = {
 }
 
 export default function VoicePage() {
-  const { language, userState } = useAppStore()
+  const { language, userState, nyayaScore } = useAppStore()
   const [result, setResult] = useState<VoiceResponse | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -41,7 +41,7 @@ export default function VoicePage() {
     setLoading(true)
     setError('')
     try {
-      const res = await voiceAsk(blob, lang, userState)
+      const res = await voiceAsk(blob, lang, userState, nyayaScore)
       handleResult(res)
     } catch (e: unknown) {
       const err = e as { response?: { data?: { detail?: string } } }
@@ -54,7 +54,7 @@ export default function VoicePage() {
     setLoading(true)
     setError('')
     try {
-      const res = await textAsk(textInput, lang, userState)
+      const res = await textAsk(textInput, lang, userState, nyayaScore)
       handleResult(res)
     } catch (e: unknown) {
       const err = e as { response?: { data?: { detail?: string } } }

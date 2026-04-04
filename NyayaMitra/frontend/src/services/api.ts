@@ -122,17 +122,20 @@ export interface FIRResponse {
 }
 
 // ── Voice ────────────────────────────────────────────────────────────────────
-export const voiceAsk = async (audioBlob: Blob, lang = 'hi', state = 'Central'): Promise<VoiceResponse> => {
+export const voiceAsk = async (audioBlob: Blob, lang = 'hi', state = 'Central', nyayaScore: number | null = null): Promise<VoiceResponse> => {
   const form = new FormData()
   form.append('audio', audioBlob, 'recording.webm')
   form.append('lang', lang)
   form.append('state', state)
+  if (nyayaScore !== null) form.append('nyayaScore', nyayaScore.toString())
   const { data } = await api.post<VoiceResponse>('/voice/ask', form)
   return data
 }
 
-export const textAsk = async (question: string, lang = 'hi', state = 'Central'): Promise<VoiceResponse> => {
-  const { data } = await api.post<VoiceResponse>('/voice/text-ask', { question, lang, state })
+export const textAsk = async (question: string, lang = 'hi', state = 'Central', nyayaScore: number | null = null): Promise<VoiceResponse> => {
+  const payload: Record<string, unknown> = { question, lang, state }
+  if (nyayaScore !== null) payload.nyayaScore = nyayaScore
+  const { data } = await api.post<VoiceResponse>('/voice/text-ask', payload)
   return data
 }
 
@@ -199,6 +202,7 @@ export const computeScore = async (payload: {
   clauses?: ClauseData[]
   active_cases?: number
   limitation_days_left?: number
+  documents_analysed?: number
 }): Promise<NyayaScoreResponse> => {
   const { data } = await api.post<NyayaScoreResponse>('/score/compute', payload)
   return data

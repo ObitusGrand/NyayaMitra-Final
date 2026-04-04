@@ -66,10 +66,10 @@ async def compute_score(request: ScoreRequest):
     4 components (25 pts each): employment, rental, consumer, active_risk.
     """
     try:
-        emp_score = 25
-        rental_score = 25
-        consumer_score = 25
-        risk_score = 25
+        emp_deduction = 0
+        rental_deduction = 0
+        consumer_deduction = 0
+        risk_deduction = 0
 
         emp_issues: list[str] = []
         rental_issues: list[str] = []
@@ -84,53 +84,64 @@ async def compute_score(request: ScoreRequest):
 
             if cat == "employment":
                 if clause.risk == "illegal":
-                    emp_score = max(0, emp_score - 8)
+                    emp_deduction += 8
                     issue = f"Illegal employment clause under {clause.law_act}"
-                    emp_issues.append(issue)
-                    top_issues.append(ScoreIssue(
-                        issue=issue, points_lost=8,
-                        fix_action="Challenge this clause under the cited Act",
-                        law_section=clause.law_act,
-                    ))
+                    if issue not in emp_issues:
+                        emp_issues.append(issue)
+                        top_issues.append(ScoreIssue(
+                            issue=issue, points_lost=8,
+                            fix_action="Challenge this clause under the cited Act",
+                            law_section=clause.law_act,
+                        ))
                 elif clause.risk == "caution":
-                    emp_score = max(0, emp_score - 3)
-                    emp_issues.append(f"Cautionary clause in {clause.law_act}")
+                    emp_deduction += 3
+                    if f"Cautionary clause in {clause.law_act}" not in emp_issues:
+                        emp_issues.append(f"Cautionary clause in {clause.law_act}")
 
             elif cat == "rental":
                 if clause.risk == "illegal":
-                    rental_score = max(0, rental_score - 10)
+                    rental_deduction += 10
                     issue = f"Illegal rental clause under {clause.law_act}"
-                    rental_issues.append(issue)
-                    top_issues.append(ScoreIssue(
-                        issue=issue, points_lost=10,
-                        fix_action="This clause violates tenant rights — remove it",
-                        law_section=clause.law_act,
-                    ))
+                    if issue not in rental_issues:
+                        rental_issues.append(issue)
+                        top_issues.append(ScoreIssue(
+                            issue=issue, points_lost=10,
+                            fix_action="This clause violates tenant rights — remove it",
+                            law_section=clause.law_act,
+                        ))
                 elif clause.risk == "caution":
-                    rental_score = max(0, rental_score - 5)
-                    rental_issues.append(f"Unfavorable rental term in {clause.law_act}")
+                    rental_deduction += 5
+                    if f"Unfavorable rental term in {clause.law_act}" not in rental_issues:
+                        rental_issues.append(f"Unfavorable rental term in {clause.law_act}")
 
             elif cat == "consumer":
                 if clause.risk == "illegal":
-                    consumer_score = max(0, consumer_score - 6)
+                    consumer_deduction += 6
                     issue = f"Illegal consumer clause under {clause.law_act}"
-                    consumer_issues.append(issue)
-                    top_issues.append(ScoreIssue(
-                        issue=issue, points_lost=6,
-                        fix_action="File complaint with Consumer Forum",
-                        law_section=clause.law_act,
-                    ))
+                    if issue not in consumer_issues:
+                        consumer_issues.append(issue)
+                        top_issues.append(ScoreIssue(
+                            issue=issue, points_lost=6,
+                            fix_action="File complaint with Consumer Forum",
+                            law_section=clause.law_act,
+                        ))
                 elif clause.risk == "caution":
-                    consumer_score = max(0, consumer_score - 3)
+                    consumer_deduction += 3
+
+        # Average deductions over documents analysed
+        docs_count = max(1, request.documents_analysed)
+        emp_score = max(0, 25 - (emp_deduction // docs_count))
+        rental_score = max(0, 25 - (rental_deduction // docs_count))
+        consumer_score = max(0, 25 - (consumer_deduction // docs_count))
 
         # ── Active risk deductions ───────────────────────────────────────
         if request.active_cases > 0:
             case_deduction = min(10, request.active_cases * 3)
-            risk_score = max(0, risk_score - case_deduction)
+            risk_deduction += case_deduction
             risk_issues.append(f"{request.active_cases} active case(s)")
 
         if request.limitation_days_left < 30:
-            risk_score = max(0, risk_score - 15)
+            risk_deduction += 15
             risk_issues.append("Limitation deadline approaching (<30 days)")
             top_issues.append(ScoreIssue(
                 issue="Case limitation period expiring soon",
@@ -138,6 +149,8 @@ async def compute_score(request: ScoreRequest):
                 fix_action="File before deadline — consult DLSA for free legal aid",
                 law_section="Limitation Act 1963",
             ))
+
+        risk_score = max(0, 25 - risk_deduction)
 
         total = emp_score + rental_score + consumer_score + risk_score
 
