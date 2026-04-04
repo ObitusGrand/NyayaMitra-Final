@@ -8,7 +8,7 @@ import os
 import re
 from dotenv import load_dotenv
 
-load_dotenv()
+load_dotenv(override=True)
 
 from groq import Groq
 from rag.setup_chroma import collection
@@ -199,8 +199,11 @@ If there are state-specific rules for {state} regarding this matter, mention the
         )
         answer = chat.choices[0].message.content or ""
     except Exception as e:
+        import logging
+        error_msg = str(e)
+        logging.getLogger("nyayamitra").error(f"Groq LLM Error: {error_msg}")
         # Graceful fallback: return context directly without LLM
-        answer = _build_fallback_answer(sections_cited, translated_q, language)
+        answer = _build_fallback_answer(sections_cited, translated_q, language, error_msg)
         confidence = max(confidence, 1)  # Keep retrieval confidence
 
     # ── Step 6: Extract citations from answer + metadata ─────────────────
@@ -239,10 +242,10 @@ def _error_response(message: str) -> dict:
     }
 
 
-def _build_fallback_answer(sections: list[dict], question: str, lang: str) -> str:
+def _build_fallback_answer(sections: list[dict], question: str, lang: str, err: str = "") -> str:
     """Build a basic answer from retrieved sections when LLM is unavailable."""
     if not sections:
-        return "LLM unavailable. Please set GROQ_API_KEY."
+        return f"LLM unavailable. Error: {err}"
 
     top = sections[0]
     if lang == "hi":
@@ -250,11 +253,11 @@ def _build_fallback_answer(sections: list[dict], question: str, lang: str) -> st
             f"Aapke sawaal ke liye '{top['act']} — Section {top['section']}' "
             f"({top.get('title', '')}) sabse relevant hai. "
             f"Kripya indiacode.nic.in par poora text padhein. "
-            f"LLM abhi uplabdh nahi hai — GROQ_API_KEY set karein."
+            f"LLM abhi uplabdh nahi hai. ERROR: {err}"
         )
     return (
         f"The most relevant law for your question is '{top['act']} — Section {top['section']}' "
         f"({top.get('title', '')}). "
         f"Please refer to indiacode.nic.in for full text. "
-        f"LLM currently unavailable — set GROQ_API_KEY."
+        f"LLM currently unavailable. ERROR: {err}"
     )

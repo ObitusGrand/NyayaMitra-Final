@@ -15,6 +15,7 @@ const NyayaScore = lazy(() => import('@/pages/NyayaScore'))
 const PoliceStationMode = lazy(() => import('@/pages/PoliceStationMode'))
 const DLSAConnect = lazy(() => import('@/pages/DLSAConnect'))
 const NegotiationCoach = lazy(() => import('@/pages/NegotiationCoach'))
+const LawyerFinder = lazy(() => import('@/pages/LawyerFinder'))
 
 import Sidebar from '@/components/Sidebar'
 import ProtectedRoute from '@/components/ProtectedRoute'
@@ -69,6 +70,7 @@ function AppLayout() {
               <Route path="/police" element={<PoliceStationMode />} />
               <Route path="/dlsa" element={<DLSAConnect />} />
               <Route path="/negotiate" element={<NegotiationCoach />} />
+              <Route path="/lawyers" element={<LawyerFinder />} />
             </Routes>
           </Suspense>
         </main>

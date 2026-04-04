@@ -38,7 +38,7 @@ export default function PoliceStationMode() {
   }
 
   return (
-    <div id="police-station-page" className="page-wrapper">
+    <div id="police-station-page" className="page-wrapper content-narrow">
       <div className="flex items-center gap-3 mb-5">
         <div style={{ width: 48, height: 48, borderRadius: 'var(--radius-md)', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--red-light)' }}>
           <Shield size={22} style={{ color: 'var(--red-danger)' }} />

@@ -31,7 +31,7 @@ export default function NyayaScore() {
   const issues = (result?.top_issues as {issue:string;points_lost:number;fix_action:string}[]) ?? []
 
   return (
-    <div id="nyaya-score-page" className="page-wrapper">
+    <div id="nyaya-score-page" className="page-wrapper content-narrow">
       <div className="mb-5">
         <h1 className="section-title">NyayaScore™</h1>
         <p className="section-subtitle">Your legal health index (0–100)</p>

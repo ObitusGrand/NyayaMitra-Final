@@ -21,7 +21,7 @@ export default function DLSAConnect() {
   }
 
   return (
-    <div id="dlsa-connect-page" className="page-wrapper">
+    <div id="dlsa-connect-page" className="page-wrapper content-narrow">
       <div className="mb-5">
         <h1 className="section-title">DLSA Connect</h1>
         <p className="section-subtitle">Free legal aid near you</p>

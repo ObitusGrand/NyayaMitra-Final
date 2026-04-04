@@ -83,9 +83,7 @@ export default function AuthPage() {
         {/* Top: Logo */}
         <div>
           <div className="flex items-center gap-3 mb-8">
-            <div style={{ width: 48, height: 48, borderRadius: 'var(--radius-lg)', background: 'rgba(255,153,51,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Scale size={24} color="var(--saffron)" />
-            </div>
+            <img src="/nyayamitra-logo.png" alt="NyayaMitra" style={{ width: 48, height: 48, objectFit: 'contain' }} />
             <div>
               <h1 className="brand-logo" style={{ fontSize: '1.5rem', color: '#FFF' }}>
                 <span style={{ color: '#FFF' }}>न्याय</span><span style={{ color: 'var(--saffron)' }}>मित्र</span>
@@ -131,9 +129,7 @@ export default function AuthPage() {
 
           {/* Mobile logo */}
           <div className="lg:hidden flex items-center gap-3 mb-8 justify-center">
-            <div className="gov-emblem-ring" style={{ width: 44, height: 44 }}>
-              <Scale size={22} />
-            </div>
+            <img src="/nyayamitra-logo.png" alt="NyayaMitra" style={{ width: 44, height: 44, objectFit: 'contain' }} />
             <div>
               <h1 className="brand-logo" style={{ fontSize: '1.375rem' }}>
                 <span className="brand-nyaya">न्याय</span><span className="brand-mitra">मित्र</span>

@@ -15,7 +15,7 @@ export default function Amendments() {
   const amendments = data?.amendments ?? MOCK_AMENDMENTS
 
   return (
-    <div id="amendments-page" className="page-wrapper">
+    <div id="amendments-page" className="page-wrapper content-narrow">
       <div className="flex items-center justify-between mb-5">
         <div>
           <h1 className="section-title">Amendments</h1>

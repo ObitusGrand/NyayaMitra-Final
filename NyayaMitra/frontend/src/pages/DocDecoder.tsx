@@ -64,7 +64,7 @@ export default function DocDecoder() {
   const trapTypeLabels: Record<string, string> = { forced_arbitration: 'Forced Arbitration', liability_waiver: 'Liability Waiver', automatic_renewal: 'Auto-Renewal Lock', unilateral_variation: 'Unilateral Changes', rights_waiver: 'Rights Waiver' }
 
   return (
-    <div id="doc-decoder-page" className="page-wrapper">
+    <div id="doc-decoder-page" className="page-wrapper content-narrow">
       <div className="mb-5">
         <h1 className="section-title">Document Tools</h1>
         <p className="section-subtitle">Decode, scan evidence, or generate legal documents</p>

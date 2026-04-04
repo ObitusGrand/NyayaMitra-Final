@@ -33,16 +33,16 @@ export default function ClauseCard({ clause, index }: ClauseCardProps) {
       </button>
       {expanded && (
         <div className="px-4 pb-4 space-y-3 pt-3" style={{ borderTop: '1px solid var(--border)' }}>
-          <div className="rounded-xl p-3" style={{ background: 'var(--bg-page)' }}>
+          <div className="rounded-md p-3.5" style={{ background: 'var(--bg-page)' }}>
             <p style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: 4 }}>हिंदी व्याख्या</p>
             <p style={{ fontSize: '0.875rem', color: 'var(--text-primary)', fontFamily: "'Noto Sans Devanagari', sans-serif" }}>{clause.plain_hindi}</p>
           </div>
-          <div className="rounded-xl p-3" style={{ background: 'var(--bg-page)' }}>
+          <div className="rounded-md p-3.5" style={{ background: 'var(--bg-page)' }}>
             <p style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: 4 }}>Plain English</p>
             <p style={{ fontSize: '0.875rem', color: 'var(--text-primary)' }}>{clause.plain_english}</p>
           </div>
           {clause.counter_clause && (
-            <div className="rounded-xl p-3" style={{ background: 'var(--green-light)', border: '1px solid rgba(46,125,50,0.15)' }}>
+            <div className="rounded-md p-3.5" style={{ background: 'var(--green-light)', border: '1px solid rgba(46,125,50,0.15)' }}>
               <p style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--green-success)', marginBottom: 4 }}>Suggested Replacement</p>
               <p style={{ fontSize: '0.875rem', color: 'var(--text-primary)', fontStyle: 'italic' }}>{clause.counter_clause}</p>
             </div>

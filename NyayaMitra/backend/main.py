@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-load_dotenv()
+load_dotenv(override=True)
 
 # ── Logging ───────────────────────────────────────────────────────────────────
 logging.basicConfig(
@@ -51,7 +51,7 @@ app.add_middleware(
 )
 
 # ── Router imports ────────────────────────────────────────────────────────────
-from routers import voice, doc, amendments, score, telegram, ivr, police, negotiation  # noqa: E402
+from routers import voice, doc, amendments, score, telegram, ivr, police, negotiation, lawyers  # noqa: E402
 
 app.include_router(voice.router,      prefix="/voice",      tags=["Voice"])
 app.include_router(doc.router,        prefix="/doc",        tags=["Documents"])
@@ -61,6 +61,7 @@ app.include_router(telegram.router,   prefix="/telegram",   tags=["Telegram"])
 app.include_router(ivr.router,        prefix="/ivr",        tags=["IVR"])
 app.include_router(police.router,     prefix="/police",     tags=["Police Station"])
 app.include_router(negotiation.router, prefix="/negotiation", tags=["Negotiation Coach"])
+app.include_router(lawyers.router,    prefix="/lawyers",    tags=["Lawyer Finder"])
 
 
 # ── Health check ──────────────────────────────────────────────────────────────

@@ -300,4 +300,76 @@ export const detectHiddenTraps = async (clauses: ClauseData[], documentType: str
   return data
 }
 
+// ── Lawyer Finder ───────────────────────────────────────────────────────────
+export interface LawyerProfile {
+  id: string
+  name: string
+  specialization: string[]
+  state: string
+  city: string
+  district: string
+  phone: string
+  email: string
+  bar_council_id: string
+  experience_years: number
+  languages: string[]
+  court: string
+  rating: number
+  cases_won: number
+  total_cases: number
+  fees_range: string
+  office_address: string
+  available: boolean
+  available_slots: string[]
+  bio: string
+  notable_cases: string[]
+  success_rate: number
+  is_free?: boolean
+}
+
+export interface CaseAnalysis {
+  primary_case_type: string
+  sub_issue: string
+  urgency: 'high' | 'medium' | 'low'
+  urgency_reason: string
+  free_legal_aid_eligible: boolean
+  preferred_specializations: string[]
+  key_facts: string[]
+  recommended_courts: string[]
+  case_summary: string
+  estimated_timeline: string
+}
+
+export interface FindLawyersResponse {
+  case_analysis: CaseAnalysis
+  lawyers: LawyerProfile[]
+  total_matched: number
+  search_params: Record<string, unknown>
+  nalsa_helpline: string
+  timestamp: string
+}
+
+export const findLawyers = async (payload: {
+  case_description: string
+  preferred_state?: string
+  preferred_city?: string
+  budget_max?: number
+  need_free_aid?: boolean
+  language_preference?: string
+  limit?: number
+}): Promise<FindLawyersResponse> => {
+  const { data } = await api.post<FindLawyersResponse>('/lawyers/find', payload)
+  return data
+}
+
+export const getLawyerContact = async (lawyerId: string): Promise<LawyerProfile> => {
+  const { data } = await api.post<LawyerProfile>('/lawyers/contact', { lawyer_id: lawyerId })
+  return data
+}
+
+export const getLawyerStates = async (): Promise<{ states: string[] }> => {
+  const { data } = await api.get('/lawyers/states')
+  return data
+}
+
 export default api

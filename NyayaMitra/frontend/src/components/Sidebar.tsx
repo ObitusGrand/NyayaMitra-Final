@@ -1,6 +1,6 @@
 // Sidebar — web application navigation with auth
 import { useLocation, useNavigate } from 'react-router-dom'
-import { Home, FileText, Scale, Mic, BarChart2, Shield, Bell, MapPin, Handshake, ShieldCheck, Phone, LogOut } from 'lucide-react'
+import { Home, FileText, Scale, Mic, BarChart2, Shield, Bell, MapPin, Handshake, ShieldCheck, Phone, LogOut, Users } from 'lucide-react'
 import { useAuth } from '@/store/AuthContext'
 
 const MAIN_NAV = [
@@ -11,6 +11,7 @@ const MAIN_NAV = [
 ]
 
 const TOOLS_NAV = [
+  { path: '/lawyers', icon: Users, label: 'Lawyer Finder', color: '#9C27B0', bg: '#F3E5F5' },
   { path: '/case', icon: BarChart2, label: 'Case Tracker', color: '#1976D2', bg: '#E3F2FD' },
   { path: '/police', icon: Shield, label: 'Police Mode', color: '#D32F2F', bg: '#FFEBEE' },
   { path: '/amendments', icon: Bell, label: 'Amendments', color: '#F59E0B', bg: '#FFF8E1' },
@@ -50,10 +51,12 @@ export default function Sidebar() {
   return (
     <aside className="sidebar">
       {/* Logo */}
-      <div className="sidebar-logo">
-        <div className="gov-emblem-ring">
-          <Scale size={20} />
-        </div>
+      <div className="sidebar-logo" onClick={() => navigate('/home')} style={{ cursor: 'pointer' }}>
+        <img
+          src="/nyayamitra-logo.png"
+          alt="NyayaMitra"
+          style={{ width: 42, height: 42, objectFit: 'contain', flexShrink: 0 }}
+        />
         <div>
           <div className="brand-logo" style={{ fontSize: '1.125rem' }}>
             <span className="brand-nyaya">न्याय</span><span className="brand-mitra">मित्र</span>

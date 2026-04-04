@@ -32,7 +32,7 @@ export default function NegotiationCoach() {
   const roleColors = { user: { bg: 'var(--saffron-light)', border: 'rgba(255,153,51,0.2)', label: 'var(--saffron-dark)' }, opponent: { bg: 'var(--blue-light)', border: 'rgba(26,95,180,0.2)', label: 'var(--blue-secondary)' }, coach: { bg: 'var(--green-light)', border: 'rgba(46,125,50,0.2)', label: 'var(--green-success)' } }
 
   return (
-    <div id="negotiation-coach-page" className="page-wrapper">
+    <div id="negotiation-coach-page" className="page-wrapper content-narrow">
       <div className="mb-5">
         <h1 className="section-title">Negotiation Coach</h1>
         <p className="section-subtitle">Roleplay legal disputes with AI opponent + rights-based debrief</p>
@@ -50,7 +50,7 @@ export default function NegotiationCoach() {
           {history.map((turn, idx) => {
             const c = roleColors[turn.role as keyof typeof roleColors] || roleColors.coach
             return (
-              <div key={idx} className="rounded-xl p-3.5 spring-in" style={{ animationDelay: `${idx * 0.04}s`, background: c.bg, border: `1px solid ${c.border}` }}>
+              <div key={idx} className="rounded-md p-3.5 spring-in" style={{ animationDelay: `${idx * 0.04}s`, background: c.bg, border: `1px solid ${c.border}` }}>
                 <p style={{ fontSize: '0.75rem', fontWeight: 700, marginBottom: 4, textTransform: 'capitalize', color: c.label }}>{turn.role}</p>
                 <p style={{ fontSize: '0.875rem', lineHeight: 1.6, color: 'var(--text-primary)' }}>{turn.text}</p>
               </div>

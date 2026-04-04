@@ -198,7 +198,7 @@ export default function Home() {
       )}
 
       {/* ─── STAT CARDS ROW ─────────────────────────────── */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '20px', marginBottom: '28px' }}>
+      <div className="dashboard-stats-row">
         {[
           { label: 'NyayaScore', value: nyayaScore !== null ? `${nyayaScore}` : '—', suffix: nyayaScore !== null ? '/100' : '', color: nyayaScore !== null ? (nyayaScore >= 75 ? 'var(--green-success)' : nyayaScore >= 50 ? 'var(--saffron)' : 'var(--red-danger)') : 'var(--text-muted)', icon: Scale, iconBg: '#E8F5E9', accent: nyayaScore !== null ? (nyayaScore >= 75 ? 'var(--green-success)' : nyayaScore >= 50 ? 'var(--saffron)' : 'var(--red-danger)') : '#E2E5EA', change: nyayaScore !== null ? (nyayaScore >= 75 ? '↑ Strong' : nyayaScore >= 50 ? '→ Moderate' : '↓ At Risk') : 'Not computed', changeColor: nyayaScore !== null ? (nyayaScore >= 75 ? 'var(--green-success)' : nyayaScore >= 50 ? 'var(--saffron)' : 'var(--red-danger)') : 'var(--text-muted)' },
           { label: 'Active Cases', value: `${activeCases}`, suffix: cases.length > 0 ? ` / ${cases.length}` : '', color: 'var(--navy)', icon: BarChart2, iconBg: '#E3F2FD', accent: 'var(--navy)', change: resolvedCases > 0 ? `${resolvedCases} resolved` : 'No cases yet', changeColor: resolvedCases > 0 ? 'var(--green-success)' : 'var(--text-muted)' },
@@ -223,7 +223,7 @@ export default function Home() {
       </div>
 
       {/* ─── TWO-COLUMN LAYOUT ──────────────────────────── */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 380px', gap: '24px', alignItems: 'start' }}>
+      <div className="dashboard-main-layout">
 
         {/* ═══ LEFT: Main Content ══════════════════════════ */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
@@ -264,7 +264,7 @@ export default function Home() {
               <h2 style={{ fontFamily: "'Poppins', sans-serif", fontSize: '1rem', fontWeight: 700, color: 'var(--navy)' }}>All Features</h2>
               <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted)' }}>{ALL_FEATURES.length} tools</span>
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '12px' }}>
+            <div className="dashboard-features-grid">
               {ALL_FEATURES.map((feat) => (
                 <button
                   key={feat.id}

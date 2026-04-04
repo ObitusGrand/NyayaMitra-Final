@@ -48,7 +48,7 @@ export default function CaseTracker() {
     const deadlineColor = getDeadlineColor(daysLeft)
 
     return (
-      <div id="case-detail-page" className="page-wrapper">
+      <div id="case-detail-page" className="page-wrapper content-narrow">
         <button onClick={() => setSelected(null)} className="flex items-center gap-2 font-semibold mb-5" style={{ fontSize: '0.875rem', color: 'var(--blue-secondary)', background: 'none', border: 'none', cursor: 'pointer' }}><ArrowLeft size={16} /> Back to cases</button>
 
         <div className="mb-5">
@@ -94,7 +94,7 @@ export default function CaseTracker() {
   }
 
   return (
-    <div id="case-tracker-page" className="page-wrapper">
+    <div id="case-tracker-page" className="page-wrapper content-narrow">
       <div className="flex items-center justify-between mb-5">
         <div>
           <h1 className="section-title">Case Tracker</h1>
