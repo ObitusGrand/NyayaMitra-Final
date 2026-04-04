@@ -86,7 +86,7 @@ def extract_citations_from_answer(answer: str, metadata_acts: list[str]) -> list
     return citations
 
 
-def rag_query(question: str, language: str = "hi", n_results: int = 5) -> dict:
+def rag_query(question: str, language: str = "hi", n_results: int = 5, state: str = "Central") -> dict:
     """
     Core RAG pipeline:
     1. Translate IPC/CrPC refs → BNS/BNSS
@@ -173,11 +173,13 @@ STRICT RULES:
 8. Always end with: what concrete action the citizen should take next."""
 
     user_prompt = f"""Legal question: {translated_q}
+Jurisdiction/State: {state}
 
 Relevant law sections (retrieved from official Indian statutes):
 {context}
 
-Provide a clear, actionable answer with specific Act name and Section number citations."""
+Provide a clear, actionable answer with specific Act name and Section number citations. 
+If there are state-specific rules for {state} regarding this matter, mention them explicitly."""
 
     try:
         chat = groq_client.chat.completions.create(

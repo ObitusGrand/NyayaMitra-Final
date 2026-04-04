@@ -779,3 +779,219 @@ Generate the complete document now:"""
     except Exception as e:
         logger.error(f"[DOC/generate] Error: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"Document generation error: {str(e)}")
+
+
+# ── ENDPOINT: Scan evidence image ────────────────────────────────────────────
+class EvidenceResponse(BaseModel):
+    extracted_text: str
+    structured_data: dict
+    suggested_doc_type: str
+    auto_fill_fields: dict
+
+@router.post("/scan-evidence", response_model=EvidenceResponse)
+async def scan_evidence(file: UploadFile = File(...)):
+    """
+    Photograph salary slip / termination letter / receipt / bill →
+    Extract structured data (names, dates, amounts) → auto-fill form.
+    Uses Llama 3.2 Vision via Groq.
+    """
+    try:
+        file_bytes = await file.read()
+        filename = file.filename or "evidence.jpg"
+
+        if not file_bytes:
+            raise HTTPException(status_code=400, detail="Empty file uploaded")
+
+        ext = os.path.splitext(filename.lower())[1]
+        if ext not in (".jpg", ".jpeg", ".png", ".webp"):
+            raise HTTPException(status_code=415, detail="Upload an image (JPG, PNG, WEBP)")
+
+        rawtext = extract_image_text(file_bytes, filename)
+        if not rawtext.strip():
+            raise HTTPException(status_code=400, detail="Could not read image")
+
+        groq_key = os.getenv("GROQ_API_KEY", "")
+        structured = {}
+        suggested = "legal_notice"
+        auto_fill = {}
+
+        if groq_key:
+            extract_prompt = f"""You are a document data extraction AI for Indian legal documents.
+
+From the following text extracted from a photographed document, extract:
+1. All party names (employer, employee, landlord, tenant, company, etc.)
+2. All amounts (salary, dues, rent, etc.) as numbers
+3. All dates
+4. Document type (salary_slip, termination_letter, rent_receipt, bill, notice, etc.)
+5. Suggested legal document to generate (salary_notice, eviction_reply, consumer_complaint, etc.)
+
+Return ONLY valid JSON:
+{{
+  "party_names": {{"employer": "", "employee": "", "company": ""}},
+  "amounts": {{"salary": 0, "total_dues": 0}},
+  "dates": {{"joining_date": "", "incident_date": ""}},
+  "document_type": "salary_slip",
+  "suggested_doc_type": "salary_notice",
+  "key_facts": "brief summary of key facts"
+}}
+
+Document text:
+{rawtext[:3000]}"""
+
+            try:
+                resp = groq_client.chat.completions.create(
+                    model="llama-3.3-70b-versatile",
+                    messages=[{"role": "user", "content": extract_prompt}],
+                    temperature=0.1,
+                    max_tokens=1024,
+                )
+                resp_text = resp.choices[0].message.content or "{}"
+                resp_text = re.sub(r'^```json?\s*', '', resp_text.strip())
+                resp_text = re.sub(r'```\s*$', '', resp_text.strip())
+                structured = json.loads(resp_text)
+                suggested = structured.get("suggested_doc_type", "legal_notice")
+
+                # Build auto-fill fields for the document generator form
+                auto_fill = {}
+                parties = structured.get("party_names", {})
+                amounts = structured.get("amounts", {})
+                dates = structured.get("dates", {})
+
+                if parties.get("employee"):
+                    auto_fill["name"] = parties["employee"]
+                elif parties.get("tenant"):
+                    auto_fill["name"] = parties["tenant"]
+
+                if parties.get("employer"):
+                    auto_fill["address"] = f"c/o {parties['employer']}"
+                    if parties.get("company"):
+                        auto_fill["address"] = f"{parties['company']}"
+
+                issue_parts = []
+                if structured.get("key_facts"):
+                    issue_parts.append(structured["key_facts"])
+
+                if amounts.get("total_dues"):
+                    auto_fill["demand"] = f"Pay Rs. {amounts['total_dues']} within 15 days"
+                elif amounts.get("salary"):
+                    auto_fill["demand"] = f"Pay Rs. {amounts['salary']} within 15 days"
+
+                auto_fill["issue"] = " ".join(issue_parts) if issue_parts else ""
+
+            except Exception as e:
+                logger.warning(f"[DOC/scan-evidence] Structured extraction failed: {e}")
+
+        return EvidenceResponse(
+            extracted_text=rawtext[:2000],
+            structured_data=structured,
+            suggested_doc_type=suggested,
+            auto_fill_fields=auto_fill,
+        )
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"[DOC/scan-evidence] Error: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Evidence scan error: {str(e)}")
+
+
+# ── ENDPOINT: Hidden trap detector (2nd pass) ───────────────────────────────
+class TrapDetectorRequest(BaseModel):
+    clauses: list[dict]
+    document_type: str = "legal_document"
+
+class TrapItem(BaseModel):
+    clause_index: int
+    trap_type: str
+    severity: str  # critical | warning
+    explanation: str
+    affected_right: str
+    law_reference: str
+
+class TrapDetectorResponse(BaseModel):
+    traps: list[TrapItem]
+    total_traps: int
+    safety_score: int  # 0-100
+
+@router.post("/hidden-traps", response_model=TrapDetectorResponse)
+async def detect_hidden_traps(request: TrapDetectorRequest):
+    """
+    Second-pass analysis specifically targeting the 5 most dangerous
+    hidden clause categories in Indian contracts.
+    """
+    try:
+        groq_key = os.getenv("GROQ_API_KEY", "")
+        traps = []
+
+        if groq_key and request.clauses:
+            clauses_text = "\n".join(
+                f"[{i}] {c.get('clause', '')[:200]}" for i, c in enumerate(request.clauses)
+            )
+
+            trap_prompt = f"""You are an expert Indian contract lawyer specializing in detecting hidden traps.
+
+Analyse these clauses from a {request.document_type} and identify ONLY the dangerous hidden traps:
+
+TRAP CATEGORIES TO CHECK:
+1. FORCED ARBITRATION — removes right to approach civil court (often void under Indian law)
+2. LIABILITY WAIVERS — attempts to waive statutory consumer/worker rights (void under Consumer Protection Act 2019 Section 3)
+3. AUTOMATIC RENEWAL — locks you in without notice or consent
+4. UNILATERAL VARIATION — allows one party to change terms at will without consent
+5. RIGHTS WAIVER — waives rights guaranteed by labour law, rent control, or consumer law (categorically unenforceable)
+
+CLAUSES:
+{clauses_text}
+
+Return ONLY valid JSON array (empty [] if no traps):
+[
+  {{
+    "clause_index": 0,
+    "trap_type": "forced_arbitration",
+    "severity": "critical",
+    "explanation": "This clause forces disputes to private arbitration...",
+    "affected_right": "Right to approach civil court",
+    "law_reference": "Arbitration Act Section 8 — consumer disputes are exempt"
+  }}
+]"""
+
+            try:
+                resp = groq_client.chat.completions.create(
+                    model="llama-3.3-70b-versatile",
+                    messages=[{"role": "user", "content": trap_prompt}],
+                    temperature=0.1,
+                    max_tokens=2048,
+                )
+                resp_text = resp.choices[0].message.content or "[]"
+                resp_text = re.sub(r'^```json?\s*', '', resp_text.strip())
+                resp_text = re.sub(r'```\s*$', '', resp_text.strip())
+                parsed = json.loads(resp_text)
+
+                if isinstance(parsed, list):
+                    for item in parsed:
+                        traps.append(TrapItem(
+                            clause_index=item.get("clause_index", 0),
+                            trap_type=item.get("trap_type", "unknown"),
+                            severity=item.get("severity", "warning"),
+                            explanation=item.get("explanation", ""),
+                            affected_right=item.get("affected_right", ""),
+                            law_reference=item.get("law_reference", ""),
+                        ))
+            except Exception as e:
+                logger.warning(f"[DOC/hidden-traps] Trap detection failed: {e}")
+
+        # Safety score: start at 100, lose points per trap
+        penalty = sum(20 if t.severity == "critical" else 10 for t in traps)
+        safety_score = max(0, 100 - penalty)
+
+        return TrapDetectorResponse(
+            traps=traps,
+            total_traps=len(traps),
+            safety_score=safety_score,
+        )
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"[DOC/hidden-traps] Error: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Trap detection error: {str(e)}")
+

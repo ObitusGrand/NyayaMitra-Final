@@ -140,6 +140,7 @@ class TextAskRequest(BaseModel):
     question: str
     lang: str = "hi"
     mode: Optional[str] = None
+    state: Optional[str] = "Central"
 
 
 class TranslateRequest(BaseModel):
@@ -320,6 +321,7 @@ async def voice_ask(
     audio: UploadFile = File(...),
     lang: str = Form("hi"),
     mode: Optional[str] = Form(None),
+    state: str = Form("Central"),
 ):
     """
     Full voice legal counselling pipeline:
@@ -357,13 +359,19 @@ async def voice_ask(
                 rag_question = f"{prefix} {question_text}"
 
         # ── Step 3: RAG Query — vector search + Groq LLM ────────────────
-        rag_result = rag_query(rag_question, lang)
+        rag_result = rag_query(rag_question, lang, state=state)
         logger.info(f"[VOICE] RAG confidence: {rag_result['confidence']}%, "
                      f"acts: {rag_result['acts_cited']}")
 
         # ── Step 4: Win probability (ML predictor) ───────────────────────
         case_type = detect_case_type(question_text, lang)
-        win_prob = predict(case_type, "India") if case_type else 50
+        win_result = predict(
+            case_type, state,
+            question_text=question_text,
+            rag_confidence=rag_result["confidence"],
+            acts_cited=rag_result.get("acts_cited", []),
+        )
+        win_prob = win_result["win_probability"]
 
         # ── Step 5: TTS — Text → Audio ───────────────────────────────────
         answer_audio = await sarvam_tts(rag_result["answer"], lang)
@@ -404,9 +412,15 @@ async def text_ask(request: TextAskRequest):
             prefix = mode_map.get(request.mode, "")
             question = f"{prefix} {question}" if prefix else question
 
-        rag_result = rag_query(question, request.lang)
+        rag_result = rag_query(question, request.lang, state=request.state)
         case_type = detect_case_type(question, request.lang)
-        win_prob = predict(case_type, "India") if case_type else 50
+        win_result = predict(
+            case_type, request.state,
+            question_text=question,
+            rag_confidence=rag_result["confidence"],
+            acts_cited=rag_result.get("acts_cited", []),
+        )
+        win_prob = win_result["win_probability"]
 
         return VoiceResponse(
             question_text=request.question,
