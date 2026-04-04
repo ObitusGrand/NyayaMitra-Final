@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: nyayamitra-backend
+    env: python
+    rootDir: backend
+    buildCommand: "pip install -r requirements.txt && python -m rag.load_statutes"
+    startCommand: "uvicorn main:app --host 0.0.0.0 --port $PORT"
+    envVars:
+      - key: ENVIRONMENT
+        value: production
+      - key: LOG_LEVEL
+        value: INFO
+      - key: CHROMA_PERSIST_DIR
+        value: ./chroma_db
+      - key: ALLOWED_ORIGINS
+        value: "http://localhost:5173"
+      # The following must be set in the Render Dashboard securely:
+      - key: GROQ_API_KEY
+        sync: false
+      - key: SARVAM_API_KEY
+        sync: false
