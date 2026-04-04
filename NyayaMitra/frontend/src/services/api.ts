@@ -122,16 +122,17 @@ export interface FIRResponse {
 }
 
 // ── Voice ────────────────────────────────────────────────────────────────────
-export const voiceAsk = async (audioBlob: Blob, lang = 'hi'): Promise<VoiceResponse> => {
+export const voiceAsk = async (audioBlob: Blob, lang = 'hi', state = 'Central'): Promise<VoiceResponse> => {
   const form = new FormData()
   form.append('audio', audioBlob, 'recording.webm')
   form.append('lang', lang)
+  form.append('state', state)
   const { data } = await api.post<VoiceResponse>('/voice/ask', form)
   return data
 }
 
-export const textAsk = async (question: string, lang = 'hi'): Promise<VoiceResponse> => {
-  const { data } = await api.post<VoiceResponse>('/voice/text-ask', { question, lang })
+export const textAsk = async (question: string, lang = 'hi', state = 'Central'): Promise<VoiceResponse> => {
+  const { data } = await api.post<VoiceResponse>('/voice/text-ask', { question, lang, state })
   return data
 }
 
@@ -238,6 +239,45 @@ export const checkHealth = async (): Promise<boolean> => {
   } catch {
     return false
   }
+}
+
+// ── Evidence Scanner ─────────────────────────────────────────────────────────
+export interface EvidenceResponse {
+  extracted_text: string
+  structured_data: Record<string, unknown>
+  suggested_doc_type: string
+  auto_fill_fields: Record<string, string>
+}
+
+export const scanEvidence = async (file: File): Promise<EvidenceResponse> => {
+  const form = new FormData()
+  form.append('file', file)
+  const { data } = await api.post<EvidenceResponse>('/doc/scan-evidence', form)
+  return data
+}
+
+// ── Hidden Trap Detector ─────────────────────────────────────────────────────
+export interface TrapItem {
+  clause_index: number
+  trap_type: string
+  severity: string
+  explanation: string
+  affected_right: string
+  law_reference: string
+}
+
+export interface TrapDetectorResponse {
+  traps: TrapItem[]
+  total_traps: number
+  safety_score: number
+}
+
+export const detectHiddenTraps = async (clauses: ClauseData[], documentType: string): Promise<TrapDetectorResponse> => {
+  const { data } = await api.post<TrapDetectorResponse>('/doc/hidden-traps', {
+    clauses: clauses.map(c => ({ clause: c.clause, risk: c.risk, law_act: c.law_act })),
+    document_type: documentType,
+  })
+  return data
 }
 
 export default api

@@ -31,12 +31,24 @@ export default function Home() {
           <h1 className="text-3xl font-black text-white">
             न्याय<span className="text-gold">मित्र</span>
           </h1>
-          <p className="text-sm text-slate-400 mt-0.5">
-            Language: {LANG_LABELS[language]} ·{' '}
-            <span className={backendOnline ? 'text-emerald-400' : 'text-red-400'}>
-              {backendOnline ? '● Online' : '● Offline'}
-            </span>
-          </p>
+          <div className="flex items-center gap-2 mt-1">
+            <p className="text-xs text-slate-400">
+              {LANG_LABELS[language]} ·{' '}
+              <span className={backendOnline ? 'text-emerald-400' : 'text-red-400'}>
+                {backendOnline ? '● Online' : '● Offline'}
+              </span>
+            </p>
+            <span className="text-xs text-slate-600">|</span>
+            <select
+              value={useAppStore.getState().userState}
+              onChange={(e) => useAppStore.getState().setUserState(e.target.value)}
+              className="text-xs bg-transparent text-amber-400 font-medium focus:outline-none appearance-none cursor-pointer"
+            >
+              {['Central', 'Maharashtra', 'Delhi', 'Karnataka', 'Tamil Nadu', 'Gujarat'].map(s => (
+                <option key={s} value={s} className="bg-slate-900 text-slate-300">{s}</option>
+              ))}
+            </select>
+          </div>
         </div>
         <button
           id="emergency-call-btn"

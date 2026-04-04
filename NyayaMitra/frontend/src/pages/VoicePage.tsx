@@ -1,11 +1,12 @@
 // VoicePage — Full voice legal counsellor with mic + text input
 import { useState, useRef } from 'react'
-import { Loader2, Send, Volume2, ExternalLink, BookOpen } from 'lucide-react'
+import { Loader2, Send, Volume2, ExternalLink, BookOpen, Share2 } from 'lucide-react'
 import MicButton from '@/components/MicButton'
 import TrustBadge from '@/components/TrustBadge'
 import NyayaGauge from '@/components/NyayaGauge'
 import { useAppStore, LANG_LABELS, type Language } from '@/store/useAppStore'
 import { voiceAsk, textAsk, type VoiceResponse } from '@/services/api'
+import { shareAnswerToWhatsApp } from '@/utils/generatePDF'
 
 const SAMPLE_QUESTIONS: Record<string, string> = {
   hi: 'मेरे मालिक ने 3 महीने से तनख्वाह नहीं दी',
@@ -15,7 +16,7 @@ const SAMPLE_QUESTIONS: Record<string, string> = {
 }
 
 export default function VoicePage() {
-  const { language } = useAppStore()
+  const { language, userState } = useAppStore()
   const [result, setResult] = useState<VoiceResponse | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -40,7 +41,7 @@ export default function VoicePage() {
     setLoading(true)
     setError('')
     try {
-      const res = await voiceAsk(blob, lang)
+      const res = await voiceAsk(blob, lang, userState)
       handleResult(res)
     } catch (e: unknown) {
       const err = e as { response?: { data?: { detail?: string } } }
@@ -53,7 +54,7 @@ export default function VoicePage() {
     setLoading(true)
     setError('')
     try {
-      const res = await textAsk(textInput, lang)
+      const res = await textAsk(textInput, lang, userState)
       handleResult(res)
     } catch (e: unknown) {
       const err = e as { response?: { data?: { detail?: string } } }
@@ -212,6 +213,17 @@ export default function VoicePage() {
               </p>
             </div>
           )}
+
+          {/* WhatsApp share */}
+          <button
+            id="share-answer-btn"
+            onClick={() => shareAnswerToWhatsApp(result.question_text, result.answer, result.acts_cited)}
+            className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-semibold transition-all"
+            style={{ background: 'rgba(37,211,102,0.12)', color: '#25d366', border: '1px solid rgba(37,211,102,0.25)' }}
+          >
+            <Share2 size={16} />
+            Share on WhatsApp
+          </button>
         </div>
       )}
     </div>

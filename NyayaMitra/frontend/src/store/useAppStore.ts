@@ -42,6 +42,10 @@ interface AppState {
   language: Language
   setLanguage: (lang: Language) => void
 
+  // User State for localized rules
+  userState: string
+  setUserState: (state: string) => void
+
   // Last query result
   lastResult: VoiceResponse | null
   setLastResult: (result: VoiceResponse | null) => void
@@ -75,6 +79,9 @@ export const useAppStore = create<AppState>()(
       language: 'hi',
       setLanguage: (language) => set({ language }),
 
+      userState: 'Central',
+      setUserState: (userState: string) => set({ userState }),
+
       lastResult: null,
       setLastResult: (lastResult) => set({ lastResult }),
 
@@ -103,6 +110,7 @@ export const useAppStore = create<AppState>()(
       name: 'nyayamitra-store',
       partialize: (state) => ({
         language: state.language,
+        userState: state.userState,
         cases: state.cases,
         nyayaScore: state.nyayaScore,
       }),

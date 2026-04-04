@@ -1,7 +1,7 @@
-// DocDecoder — Upload PDF → clause analysis + document generator
+// DocDecoder — Upload PDF/Image → clause analysis + evidence scanner + document generator
 import { useState, useCallback } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { Upload, FileText, Loader2, AlertTriangle, CheckCircle, Wand2 } from 'lucide-react'
+import { Upload, Loader2, AlertTriangle, CheckCircle, Wand2, Camera, ShieldAlert, Eye } from 'lucide-react'
 import ClauseCard from '@/components/ClauseCard'
 import DocumentCard from '@/components/DocumentCard'
 import { useAppStore } from '@/store/useAppStore'
@@ -9,8 +9,11 @@ import {
   decodeDocument,
   generateDocument,
   getDocumentTypes,
+  scanEvidence,
+  detectHiddenTraps,
   type DecodeResponse,
   type GenerateResponse,
+  type TrapItem,
 } from '@/services/api'
 
 const FALLBACK_DOC_TYPES = [
@@ -27,9 +30,13 @@ export default function DocDecoder() {
   const [generated, setGenerated] = useState<GenerateResponse | null>(null)
   const [loading, setLoading] = useState(false)
   const [genLoading, setGenLoading] = useState(false)
+  const [scanLoading, setScanLoading] = useState(false)
+  const [trapLoading, setTrapLoading] = useState(false)
   const [error, setError] = useState('')
   const [dragging, setDragging] = useState(false)
-  const [tab, setTab] = useState<'decode' | 'generate'>('decode')
+  const [tab, setTab] = useState<'decode' | 'generate' | 'evidence'>('decode')
+  const [traps, setTraps] = useState<TrapItem[]>([])
+  const [trapScore, setTrapScore] = useState<number | null>(null)
 
   // Generate form state
   const [docType, setDocType] = useState('legal_notice')
@@ -49,6 +56,8 @@ export default function DocDecoder() {
     setLoading(true)
     setError('')
     setDecodeResult(null)
+    setTraps([])
+    setTrapScore(null)
     try {
       const res = await decodeDocument(file)
       setDecodeResult(res)
@@ -82,30 +91,80 @@ export default function DocDecoder() {
     }
   }
 
+  // Evidence scanner
+  const handleEvidenceScan = async (file: File) => {
+    setScanLoading(true)
+    setError('')
+    try {
+      const res = await scanEvidence(file)
+      // Auto-fill form fields from extracted data
+      const af = res.auto_fill_fields
+      setFacts({
+        name: af.name || facts.name,
+        address: af.address || facts.address,
+        issue: af.issue || facts.issue,
+        demand: af.demand || facts.demand,
+      })
+      if (res.suggested_doc_type) setDocType(res.suggested_doc_type)
+      setTab('generate')
+    } catch (e: unknown) {
+      const err = e as { response?: { data?: { detail?: string } } }
+      setError(err?.response?.data?.detail || 'Evidence scan failed')
+    } finally {
+      setScanLoading(false)
+    }
+  }
+
+  // Hidden trap detector
+  const runTrapDetection = async () => {
+    if (!decodeResult) return
+    setTrapLoading(true)
+    try {
+      const res = await detectHiddenTraps(decodeResult.clauses, decodeResult.document_type)
+      setTraps(res.traps)
+      setTrapScore(res.safety_score)
+    } catch {
+      // Non-fatal
+    } finally {
+      setTrapLoading(false)
+    }
+  }
+
   const riskColor = { safe: '#34d399', caution: '#fbbf24', illegal: '#f87171' }
+  const trapTypeLabels: Record<string, string> = {
+    forced_arbitration: 'Forced Arbitration',
+    liability_waiver: 'Liability Waiver',
+    automatic_renewal: 'Auto-Renewal Lock',
+    unilateral_variation: 'Unilateral Changes',
+    rights_waiver: 'Rights Waiver',
+  }
 
   return (
     <div id="doc-decoder-page" className="page-wrapper">
       <div className="mb-6">
         <h1 className="section-title">Document Tools</h1>
-        <p className="section-subtitle">Decode legal documents or generate new ones</p>
+        <p className="section-subtitle">Decode, scan evidence, or generate legal documents</p>
       </div>
 
       {/* Tabs */}
       <div className="flex gap-1 p-1 rounded-xl mb-6"
         style={{ background: 'rgba(255,255,255,0.05)' }}>
-        {(['decode', 'generate'] as const).map((t) => (
+        {([
+          { key: 'decode' as const, label: 'Decode', icon: '🔍' },
+          { key: 'evidence' as const, label: 'Scan', icon: '📸' },
+          { key: 'generate' as const, label: 'Generate', icon: '✍️' },
+        ]).map((t) => (
           <button
-            key={t}
-            id={`doc-tab-${t}`}
-            onClick={() => setTab(t)}
+            key={t.key}
+            id={`doc-tab-${t.key}`}
+            onClick={() => setTab(t.key)}
             className="flex-1 py-2 rounded-lg text-sm font-medium transition-all"
             style={{
-              background: tab === t ? 'rgba(245,158,11,0.15)' : 'transparent',
-              color: tab === t ? '#f59e0b' : '#64748b',
+              background: tab === t.key ? 'rgba(245,158,11,0.15)' : 'transparent',
+              color: tab === t.key ? '#f59e0b' : '#64748b',
             }}
           >
-            {t === 'decode' ? '🔍 Decode' : '✍️ Generate'}
+            {t.icon} {t.label}
           </button>
         ))}
       </div>
@@ -117,7 +176,7 @@ export default function DocDecoder() {
         </div>
       )}
 
-      {/* Decode tab */}
+      {/* ═══ DECODE TAB ═══ */}
       {tab === 'decode' && (
         <div className="space-y-4">
           {/* Drop zone */}
@@ -185,6 +244,50 @@ export default function DocDecoder() {
                 </div>
               </div>
 
+              {/* Hidden trap detector button */}
+              <button
+                onClick={runTrapDetection}
+                disabled={trapLoading}
+                className="w-full glass-card p-3 flex items-center justify-center gap-2 text-sm font-semibold transition-all"
+                style={{
+                  color: traps.length > 0 ? '#f87171' : '#f59e0b',
+                  border: traps.length > 0 ? '1px solid rgba(248,113,113,0.3)' : '1px solid rgba(245,158,11,0.2)',
+                }}
+              >
+                {trapLoading ? <Loader2 size={15} className="animate-spin" /> : <ShieldAlert size={15} />}
+                {trapLoading ? 'Scanning for hidden traps...' : traps.length > 0 ? `${traps.length} Hidden Trap(s) Found` : 'Scan for Hidden Traps'}
+              </button>
+
+              {/* Trap results */}
+              {traps.length > 0 && (
+                <div className="space-y-2 fade-in">
+                  {trapScore !== null && (
+                    <div className="glass-card p-3 flex items-center justify-between" style={{ border: '1px solid rgba(248,113,113,0.2)' }}>
+                      <span className="text-xs text-slate-400">Contract Safety Score</span>
+                      <span className="text-lg font-black" style={{ color: trapScore >= 70 ? '#34d399' : trapScore >= 40 ? '#fbbf24' : '#f87171' }}>
+                        {trapScore}/100
+                      </span>
+                    </div>
+                  )}
+                  {traps.map((trap, i) => (
+                    <div key={i} className="glass-card p-4" style={{ border: `1px solid ${trap.severity === 'critical' ? 'rgba(248,113,113,0.3)' : 'rgba(251,191,36,0.3)'}` }}>
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="text-xs font-bold px-2 py-0.5 rounded-full"
+                          style={{ background: trap.severity === 'critical' ? 'rgba(248,113,113,0.15)' : 'rgba(251,191,36,0.15)', color: trap.severity === 'critical' ? '#f87171' : '#fbbf24' }}>
+                          {trap.severity.toUpperCase()}
+                        </span>
+                        <span className="text-xs font-semibold text-white">{trapTypeLabels[trap.trap_type] || trap.trap_type}</span>
+                      </div>
+                      <p className="text-xs text-slate-300 mb-2">{trap.explanation}</p>
+                      <div className="flex items-start gap-1 text-[10px] text-slate-500">
+                        <Eye size={10} className="mt-0.5 shrink-0" />
+                        <span><strong className="text-slate-400">Right affected:</strong> {trap.affected_right} · <strong className="text-slate-400">Law:</strong> {trap.law_reference}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
               {/* Clauses */}
               <div className="space-y-3">
                 <p className="text-xs text-slate-500 font-medium uppercase tracking-wider">
@@ -199,7 +302,50 @@ export default function DocDecoder() {
         </div>
       )}
 
-      {/* Generate tab */}
+      {/* ═══ EVIDENCE SCANNER TAB ═══ */}
+      {tab === 'evidence' && (
+        <div className="space-y-4">
+          <div className="glass-card p-6 text-center">
+            <Camera size={48} className="text-amber-400 mx-auto mb-4" />
+            <h2 className="text-lg font-bold text-white mb-2">Scan Evidence</h2>
+            <p className="text-xs text-slate-400 mb-4">
+              Photograph your salary slip, termination letter, rent receipt, or any legal document.
+              AI will extract all details and auto-fill a legal notice for you.
+            </p>
+            <label htmlFor="evidence-file" className="btn-gold px-6 py-3 inline-flex items-center gap-2 cursor-pointer">
+              {scanLoading ? <Loader2 size={16} className="animate-spin" /> : <Camera size={16} />}
+              {scanLoading ? 'Scanning...' : 'Upload Photo'}
+            </label>
+            <input
+              id="evidence-file"
+              type="file"
+              accept="image/*"
+              capture="environment"
+              className="hidden"
+              onChange={(e) => e.target.files?.[0] && handleEvidenceScan(e.target.files[0])}
+            />
+          </div>
+
+          <div className="glass-card p-4">
+            <p className="text-xs text-slate-500 mb-2 font-medium">How it works</p>
+            <div className="space-y-2">
+              {[
+                { step: '1', text: 'Take a photo of any salary slip, notice, or receipt' },
+                { step: '2', text: 'AI reads the document and extracts names, dates, amounts' },
+                { step: '3', text: 'Form auto-fills → generate a legal notice in seconds' },
+              ].map((s) => (
+                <div key={s.step} className="flex items-center gap-3">
+                  <span className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-amber-400"
+                    style={{ background: 'rgba(245,158,11,0.15)' }}>{s.step}</span>
+                  <span className="text-sm text-slate-300">{s.text}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ═══ GENERATE TAB ═══ */}
       {tab === 'generate' && (
         <div className="space-y-4">
           <div>
@@ -227,7 +373,12 @@ export default function DocDecoder() {
             { key: 'demand', label: 'Demand / Relief Sought', placeholder: 'Pay ₹50,000 within 15 days' },
           ].map(({ key, label, placeholder }) => (
             <div key={key}>
-              <label className="text-xs text-slate-500 mb-2 block font-medium">{label}</label>
+              <label className="text-xs text-slate-500 mb-2 block font-medium">
+                {label}
+                {facts[key as keyof typeof facts] && (
+                  <CheckCircle size={10} className="inline ml-1.5 text-emerald-400" />
+                )}
+              </label>
               {key === 'issue' ? (
                 <textarea
                   id={`doc-facts-${key}`}

@@ -1,0 +1,43 @@
+{
+  "name": "NyayaMitra - AI Legal Justice Platform",
+  "short_name": "NyayaMitra",
+  "description": "India's first AI-powered legal justice platform. Voice-first legal counselling in 6 Indian languages, document generation, and case tracking — free legal help for every Indian.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0e1a",
+  "theme_color": "#f59e0b",
+  "orientation": "portrait-primary",
+  "categories": ["legal", "government", "utilities"],
+  "lang": "hi",
+  "icons": [
+    {
+      "src": "/nyayamitra-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/nyayamitra-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "Voice Counsellor",
+      "short_name": "Voice",
+      "description": "Ask legal question by voice",
+      "url": "/voice",
+      "icons": [{ "src": "/nyayamitra-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Document Tools",
+      "short_name": "Docs",
+      "description": "Decode or generate legal documents",
+      "url": "/documents",
+      "icons": [{ "src": "/nyayamitra-192.png", "sizes": "192x192" }]
+    }
+  ]
+}
