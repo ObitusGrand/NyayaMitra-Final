@@ -1,6 +1,6 @@
 // Home — Dashboard with quick actions + status
 import { useNavigate } from 'react-router-dom'
-import { Mic, FileText, Scale, Shield, Bell, MapPin, Phone, ChevronRight, CheckCircle, WifiOff } from 'lucide-react'
+import { Mic, FileText, Scale, Shield, Bell, MapPin, Phone, ChevronRight, CheckCircle, WifiOff, Handshake } from 'lucide-react'
 import { useAppStore, LANG_LABELS } from '@/store/useAppStore'
 import { useEffect } from 'react'
 import { checkHealth } from '@/services/api'
@@ -12,6 +12,7 @@ const QUICK_ACTIONS = [
   { id: 'police', icon: Shield, label: 'Police Mode', sublabel: 'File FIR · Know rights', path: '/police', color: '#f87171', bg: 'rgba(248,113,113,0.1)' },
   { id: 'amendments', icon: Bell, label: 'Amendments', sublabel: 'Latest law changes', path: '/amendments', color: '#fbbf24', bg: 'rgba(251,191,36,0.1)' },
   { id: 'dlsa', icon: MapPin, label: 'DLSA Connect', sublabel: 'Find free legal aid', path: '/dlsa', color: '#60a5fa', bg: 'rgba(96,165,250,0.1)' },
+  { id: 'negotiate', icon: Handshake, label: 'Negotiation Coach', sublabel: 'Roleplay legal disputes', path: '/negotiate', color: '#34d399', bg: 'rgba(52,211,153,0.1)' },
 ]
 
 export default function Home() {

@@ -62,6 +62,26 @@ export interface GenerateResponse {
   word_count: number
 }
 
+export interface DocumentTypeOption {
+  value: string
+  label: string
+  category: string
+  primary_law: string
+}
+
+export interface NegotiationTurn {
+  role: 'user' | 'opponent' | 'coach'
+  text: string
+}
+
+export interface NegotiationResponse {
+  opponent_reply: string
+  coach_debrief: string
+  rights_missed: string[]
+  suggested_next_line: string
+  leverage_score: number
+}
+
 export interface Amendment {
   title: string
   affected_act: string
@@ -143,6 +163,22 @@ export const generateDocument = async (
     lang,
     state,
   })
+  return data
+}
+
+export const getDocumentTypes = async (): Promise<{ types: DocumentTypeOption[]; total: number }> => {
+  const { data } = await api.get('/doc/types')
+  return data
+}
+
+// ── Negotiation coach ───────────────────────────────────────────────────────
+export const negotiationRespond = async (payload: {
+  scenario: string
+  user_message: string
+  lang?: string
+  history?: NegotiationTurn[]
+}): Promise<NegotiationResponse> => {
+  const { data } = await api.post<NegotiationResponse>('/negotiation/respond', payload)
   return data
 }
 

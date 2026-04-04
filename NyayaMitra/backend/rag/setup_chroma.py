@@ -5,12 +5,15 @@ Gracefully handles missing API key for local development.
 """
 
 import os
+import logging
 from dotenv import load_dotenv
 
 load_dotenv()
 
 import chromadb
 from chromadb.utils import embedding_functions
+
+logger = logging.getLogger("nyayamitra.chroma")
 
 CHROMA_PATH = os.path.join(os.path.dirname(__file__), "..", "chroma_db")
 
@@ -31,12 +34,12 @@ if _openai_key and _openai_key != "sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
         embedding_function=openai_ef,
         metadata={"hnsw:space": "cosine"},
     )
-    print(f"📚 ChromaDB ready (OpenAI embeddings) — {collection.count()} documents")
+    logger.info(f"ChromaDB ready (OpenAI embeddings) -- {collection.count()} documents")
 else:
     # Fallback: ChromaDB's default embedding function (Sentence Transformers)
     collection = client.get_or_create_collection(
         name="indian_laws",
         metadata={"hnsw:space": "cosine"},
     )
-    print(f"📚 ChromaDB ready (default embeddings) — {collection.count()} documents")
-    print("   ⚠ Set OPENAI_API_KEY in .env for production-quality embeddings")
+    logger.info(f"ChromaDB ready (default embeddings) -- {collection.count()} documents")
+    logger.warning("Set OPENAI_API_KEY in .env for production-quality embeddings")

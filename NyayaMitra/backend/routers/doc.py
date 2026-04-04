@@ -123,6 +123,38 @@ class GenerateResponse(BaseModel):
     word_count: int
 
 
+@router.get("/types")
+async def list_document_types():
+    """Return supported document types as data, grouped by rough category."""
+    categories = {
+        "labour": ["salary", "wage", "pf", "gratuity", "maternity", "posh", "termination", "retrenchment"],
+        "property": ["rent", "eviction", "rera", "property", "encroachment", "construction"],
+        "consumer": ["consumer", "product", "insurance", "bank", "ecommerce", "medical"],
+        "criminal": ["fir", "bail", "defamation", "harassment", "confinement", "teasing"],
+        "government": ["rti", "govt", "pil"],
+        "family": ["domestic", "maintenance", "dowry", "custody"],
+        "cyber": ["cyber", "data", "social"],
+        "general": ["notice", "affidavit", "power", "senior", "rte"],
+    }
+
+    def classify(key: str) -> str:
+        for cat, hints in categories.items():
+            if any(h in key for h in hints):
+                return cat
+        return "general"
+
+    items = []
+    for doc_type, primary_law in DOC_TYPES.items():
+        items.append({
+            "value": doc_type,
+            "label": doc_type.replace("_", " ").title(),
+            "category": classify(doc_type),
+            "primary_law": primary_law,
+        })
+
+    return {"types": sorted(items, key=lambda x: x["label"]), "total": len(items)}
+
+
 # ── PDF text extraction with pdfplumber ───────────────────────────────────────
 def extract_pdf_text(file_bytes: bytes) -> str:
     """

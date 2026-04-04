@@ -1,1 +1,122 @@
-[]
+[
+	{
+		"state": "Maharashtra",
+		"city": "Mumbai",
+		"district": "Mumbai City",
+		"pincode": "400001",
+		"phone": "022-20827100",
+		"address": "City Civil Court Complex, Dhobi Talao",
+		"timing": "Mon-Fri 10:00-17:00",
+		"email": "dlsa-mumbaicity@maharashtra.gov.in",
+		"lat": 18.9434,
+		"lon": 72.8321
+	},
+	{
+		"state": "Maharashtra",
+		"city": "Pune",
+		"district": "Pune",
+		"pincode": "411001",
+		"phone": "020-26122000",
+		"address": "District Court Compound, Shivajinagar",
+		"timing": "Mon-Fri 10:00-17:00",
+		"email": "dlsa-pune@maharashtra.gov.in",
+		"lat": 18.5314,
+		"lon": 73.8468
+	},
+	{
+		"state": "Delhi",
+		"city": "New Delhi",
+		"district": "New Delhi",
+		"pincode": "110001",
+		"phone": "011-23070100",
+		"address": "Patiala House Courts, Tilak Marg",
+		"timing": "Mon-Fri 09:30-17:30",
+		"email": "dlsa-newdelhi@dslsa.org",
+		"lat": 28.6145,
+		"lon": 77.2294
+	},
+	{
+		"state": "Karnataka",
+		"city": "Bengaluru",
+		"district": "Bengaluru Urban",
+		"pincode": "560001",
+		"phone": "080-22243100",
+		"address": "City Civil Court Complex, Hudson Circle",
+		"timing": "Mon-Fri 10:00-17:00",
+		"email": "dlsa-bengaluru@karnataka.gov.in",
+		"lat": 12.9716,
+		"lon": 77.5946
+	},
+	{
+		"state": "Tamil Nadu",
+		"city": "Chennai",
+		"district": "Chennai",
+		"pincode": "600104",
+		"phone": "044-25301234",
+		"address": "Madras High Court Campus, Parry's Corner",
+		"timing": "Mon-Fri 10:00-17:00",
+		"email": "dlsa-chennai@tn.gov.in",
+		"lat": 13.0827,
+		"lon": 80.2707
+	},
+	{
+		"state": "West Bengal",
+		"city": "Kolkata",
+		"district": "Kolkata",
+		"pincode": "700001",
+		"phone": "033-22130000",
+		"address": "City Civil Court, B.B.D. Bagh",
+		"timing": "Mon-Fri 10:00-17:00",
+		"email": "dlsa-kolkata@wblsa.gov.in",
+		"lat": 22.5726,
+		"lon": 88.3639
+	},
+	{
+		"state": "Telangana",
+		"city": "Hyderabad",
+		"district": "Hyderabad",
+		"pincode": "500001",
+		"phone": "040-24601234",
+		"address": "City Civil Court, Nampally",
+		"timing": "Mon-Fri 10:00-17:00",
+		"email": "dlsa-hyderabad@telangana.gov.in",
+		"lat": 17.385,
+		"lon": 78.4867
+	},
+	{
+		"state": "Gujarat",
+		"city": "Ahmedabad",
+		"district": "Ahmedabad",
+		"pincode": "380009",
+		"phone": "079-25506000",
+		"address": "District Court Complex, Navrangpura",
+		"timing": "Mon-Fri 10:00-17:00",
+		"email": "dlsa-ahmedabad@gujarat.gov.in",
+		"lat": 23.0225,
+		"lon": 72.5714
+	},
+	{
+		"state": "Uttar Pradesh",
+		"city": "Lucknow",
+		"district": "Lucknow",
+		"pincode": "226001",
+		"phone": "0522-2615000",
+		"address": "District Court, Kaiserbagh",
+		"timing": "Mon-Fri 10:00-17:00",
+		"email": "dlsa-lucknow@upslsa.in",
+		"lat": 26.8467,
+		"lon": 80.9462
+	},
+	{
+		"state": "Rajasthan",
+		"city": "Jaipur",
+		"district": "Jaipur",
+		"pincode": "302001",
+		"phone": "0141-2229000",
+		"address": "District & Sessions Court, Bani Park",
+		"timing": "Mon-Fri 10:00-17:00",
+		"email": "dlsa-jaipur@rajasthan.gov.in",
+		"lat": 26.9124,
+		"lon": 75.7873
+	}
+]

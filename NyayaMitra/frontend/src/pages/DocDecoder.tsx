@@ -1,20 +1,24 @@
 // DocDecoder — Upload PDF → clause analysis + document generator
 import { useState, useCallback } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import { Upload, FileText, Loader2, AlertTriangle, CheckCircle, Wand2 } from 'lucide-react'
 import ClauseCard from '@/components/ClauseCard'
 import DocumentCard from '@/components/DocumentCard'
 import { useAppStore } from '@/store/useAppStore'
-import { decodeDocument, generateDocument, type DecodeResponse, type GenerateResponse } from '@/services/api'
+import {
+  decodeDocument,
+  generateDocument,
+  getDocumentTypes,
+  type DecodeResponse,
+  type GenerateResponse,
+} from '@/services/api'
 
-const DOC_TYPES = [
+const FALLBACK_DOC_TYPES = [
   { value: 'legal_notice', label: 'Legal Notice' },
   { value: 'salary_notice', label: 'Salary Notice' },
   { value: 'rti', label: 'RTI Application' },
   { value: 'eviction_reply', label: 'Eviction Reply' },
   { value: 'consumer_complaint', label: 'Consumer Complaint' },
-  { value: 'fir', label: 'FIR Draft' },
-  { value: 'domestic_violence', label: 'DV Complaint' },
-  { value: 'cheque_bounce', label: 'Cheque Bounce' },
 ]
 
 export default function DocDecoder() {
@@ -30,6 +34,16 @@ export default function DocDecoder() {
   // Generate form state
   const [docType, setDocType] = useState('legal_notice')
   const [facts, setFacts] = useState({ name: '', address: '', issue: '', demand: '' })
+
+  const { data: docTypesData } = useQuery({
+    queryKey: ['doc-types'],
+    queryFn: getDocumentTypes,
+    retry: 1,
+  })
+
+  const docTypes = docTypesData?.types?.length
+    ? docTypesData.types.map((t) => ({ value: t.value, label: `${t.label} (${t.category})` }))
+    : FALLBACK_DOC_TYPES
 
   const handleFile = async (file: File) => {
     setLoading(true)
@@ -197,7 +211,7 @@ export default function DocDecoder() {
               className="input-dark"
               style={{ appearance: 'none' }}
             >
-              {DOC_TYPES.map((d) => (
+              {docTypes.map((d) => (
                 <option key={d.value} value={d.value} style={{ background: '#111827' }}>
                   {d.label}
                 </option>

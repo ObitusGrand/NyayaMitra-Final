@@ -1,24 +1,33 @@
 // DLSAConnect — Find free legal aid near you
-import { useState } from 'react'
-import { MapPin, Phone, Clock, ChevronRight, Search } from 'lucide-react'
-
-const DLSA_DATA = [
-  { state: 'Maharashtra', city: 'Mumbai', phone: '022-20827100', address: 'City Civil Court Complex, Dhobi Talao', timing: 'Mon-Fri 10AM-5PM', email: 'dlsa.mumbai@example.gov.in' },
-  { state: 'Maharashtra', city: 'Pune', phone: '020-12345678', address: 'District Court Complex, Shivajinagar', timing: 'Mon-Fri 10AM-5PM', email: 'dlsa.pune@example.gov.in' },
-  { state: 'Delhi', city: 'New Delhi', phone: '011-23070100', address: 'Patiala House Courts, Tilak Marg', timing: 'Mon-Fri 9:30AM-5:30PM', email: 'dlsa.delhi@example.gov.in' },
-  { state: 'Karnataka', city: 'Bengaluru', phone: '080-22243100', address: 'High Court Building, Ambedkar Veedhi', timing: 'Mon-Fri 10AM-5PM', email: 'dlsa.bengaluru@example.gov.in' },
-  { state: 'Tamil Nadu', city: 'Chennai', phone: '044-25301234', address: 'High Court Complex, Parry\'s Corner', timing: 'Mon-Fri 10AM-5PM', email: 'dlsa.chennai@example.gov.in' },
-  { state: 'West Bengal', city: 'Kolkata', phone: '033-22130000', address: 'High Court, Strand Road', timing: 'Mon-Fri 10AM-5PM', email: 'dlsa.kolkata@example.gov.in' },
-  { state: 'Gujarat', city: 'Ahmedabad', phone: '079-25506000', address: 'City Civil and Sessions Court, Navrangpura', timing: 'Mon-Fri 10AM-5PM', email: 'dlsa.ahmedabad@example.gov.in' },
-  { state: 'Telangana', city: 'Hyderabad', phone: '040-24601234', address: 'City Civil Court Complex, Nampally', timing: 'Mon-Fri 10AM-5PM', email: 'dlsa.hyderabad@example.gov.in' },
-]
+import { useMemo, useState } from 'react'
+import { MapPin, Phone, Clock, Search, LocateFixed } from 'lucide-react'
+import { getAllDlsaOffices, nearestDLSA, searchDlsaOffices, type DlsaOffice } from '@/utils/dlsa'
 
 export default function DLSAConnect() {
   const [search, setSearch] = useState('')
-  const filtered = DLSA_DATA.filter(d =>
-    d.city.toLowerCase().includes(search.toLowerCase()) ||
-    d.state.toLowerCase().includes(search.toLowerCase())
-  )
+  const [nearest, setNearest] = useState<(DlsaOffice & { distanceKm: number }) | null>(null)
+  const [geoError, setGeoError] = useState('')
+
+  const all = useMemo(() => getAllDlsaOffices(), [])
+  const filtered = useMemo(() => searchDlsaOffices(search), [search])
+
+  const detectNearest = () => {
+    setGeoError('')
+    if (!navigator.geolocation) {
+      setGeoError('Geolocation is not supported in this browser.')
+      return
+    }
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const found = nearestDLSA(pos.coords.latitude, pos.coords.longitude)
+        setNearest(found)
+      },
+      (err) => {
+        setGeoError(err.message || 'Unable to fetch your location')
+      },
+      { enableHighAccuracy: true, timeout: 10000 }
+    )
+  }
 
   return (
     <div id="dlsa-connect-page" className="page-wrapper">
@@ -45,8 +54,23 @@ export default function DLSAConnect() {
       <div className="relative mb-5">
         <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
         <input type="text" value={search} onChange={e => setSearch(e.target.value)}
-          placeholder="Search by city or state..." className="input-dark pl-9" />
+          placeholder="Search by city, state, district or pincode..." className="input-dark pl-9" />
       </div>
+
+      <button onClick={detectNearest} className="btn-ghost w-full mb-5 flex items-center justify-center gap-2">
+        <LocateFixed size={14} /> Detect nearest DLSA from my location
+      </button>
+
+      {geoError && <p className="text-xs text-red-400 mb-3">{geoError}</p>}
+
+      {nearest && (
+        <div className="glass-card p-4 mb-5 border border-amber-400/20">
+          <p className="text-xs text-amber-400 font-semibold mb-1">Nearest DLSA</p>
+          <p className="text-sm text-white">{nearest.city}, {nearest.state}</p>
+          <p className="text-xs text-slate-400 mt-1">{nearest.address}</p>
+          <p className="text-xs text-slate-500 mt-1">Approx distance: {nearest.distanceKm} km</p>
+        </div>
+      )}
 
       {/* Who is eligible */}
       <div className="glass-card p-4 mb-5">
@@ -61,6 +85,7 @@ export default function DLSAConnect() {
       </div>
 
       {/* DLSA list */}
+      <p className="text-xs text-slate-500 mb-2">Showing {filtered.length} of {all.length} offices</p>
       <div className="space-y-3">
         {filtered.map((d, i) => (
           <div key={i} id={`dlsa-card-${i}`} className="glass-card p-4 slide-up" style={{animationDelay:`${i*0.05}s`}}>
@@ -83,6 +108,10 @@ export default function DLSAConnect() {
               <div className="flex items-start gap-2">
                 <MapPin size={12} className="shrink-0 text-slate-600 mt-0.5" />
                 <span>{d.address}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <MapPin size={12} className="shrink-0 text-slate-600" />
+                <span>{d.pincode}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Clock size={12} className="shrink-0 text-slate-600" />
