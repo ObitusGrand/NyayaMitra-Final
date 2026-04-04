@@ -37,56 +37,73 @@ export interface TimelineEvent {
   type: 'filed' | 'hearing' | 'order' | 'notice' | 'update'
 }
 
-interface AppState {
-  // Language
+export interface ActivityEntry {
+  id: string
+  type: 'voice_query' | 'doc_decoded' | 'case_added' | 'score_computed' | 'fir_generated' | 'negotiation'
+  title: string
+  timestamp: string // ISO string
+  xpEarned: number
+}
+
+// ── Slice Interfaces ─────────────────────────────────────────────────────────
+
+interface ConfigSlice {
   language: Language
   setLanguage: (lang: Language) => void
-
-  // User State for localized rules
   userState: string
   setUserState: (state: string) => void
-
-  // Last query result
-  lastResult: VoiceResponse | null
-  setLastResult: (result: VoiceResponse | null) => void
-
-  // Cases
-  cases: Case[]
-  addCase: (c: Case) => void
-  updateCase: (id: string, updates: Partial<Case>) => void
-  removeCase: (id: string) => void
-
-  // Decoded clauses for global score calculation
-  decodedClauses: ClauseData[]
-  addDecodedClauses: (clauses: ClauseData[]) => void
-  documentsDecoded: number
-  incrementDocumentsDecoded: () => void
-
-  // NyayaScore
-  nyayaScore: number | null
-  setNyayaScore: (score: number | null) => void
-
-  // Police mode
-  policeMode: boolean
-  setPoliceMode: (v: boolean) => void
-
-  // Backend status
   backendOnline: boolean
   setBackendOnline: (v: boolean) => void
 }
 
+interface CaseSlice {
+  cases: Case[]
+  addCase: (c: Case) => void
+  updateCase: (id: string, updates: Partial<Case>) => void
+  removeCase: (id: string) => void
+}
+
+interface DocumentSlice {
+  decodedClauses: ClauseData[]
+  addDecodedClauses: (clauses: ClauseData[]) => void
+  documentsDecoded: number
+  incrementDocumentsDecoded: () => void
+}
+
+interface FeatureSlice {
+  lastResult: VoiceResponse | null
+  setLastResult: (result: VoiceResponse | null) => void
+  nyayaScore: number | null
+  setNyayaScore: (score: number | null) => void
+  policeMode: boolean
+  setPoliceMode: (v: boolean) => void
+}
+
+interface GamificationSlice {
+  totalXP: number
+  activityLog: ActivityEntry[]
+  activeDays: string[] // ISO date strings (YYYY-MM-DD) of active days
+  logActivity: (entry: Omit<ActivityEntry, 'id' | 'timestamp'>) => void
+  voiceQueriesCount: number
+  incrementVoiceQueries: () => void
+}
+
+type AppState = ConfigSlice & CaseSlice & DocumentSlice & FeatureSlice & GamificationSlice
+
+// ── Store Assembly ───────────────────────────────────────────────────────────
+
 export const useAppStore = create<AppState>()(
   persist(
     (set) => ({
+      // Config Slice
       language: 'hi',
       setLanguage: (language) => set({ language }),
-
       userState: 'Central',
       setUserState: (userState: string) => set({ userState }),
+      backendOnline: false,
+      setBackendOnline: (backendOnline) => set({ backendOnline }),
 
-      lastResult: null,
-      setLastResult: (lastResult) => set({ lastResult }),
-
+      // Case Slice
       cases: [],
       addCase: (c) => set((state) => ({ cases: [c, ...state.cases] })),
       updateCase: (id, updates) =>
@@ -96,20 +113,41 @@ export const useAppStore = create<AppState>()(
       removeCase: (id) =>
         set((state) => ({ cases: state.cases.filter((c) => c.id !== id) })),
 
+      // Document Slice
       decodedClauses: [],
       addDecodedClauses: (newClauses) => set((state) => ({ decodedClauses: [...state.decodedClauses, ...newClauses] })),
-      
       documentsDecoded: 0,
       incrementDocumentsDecoded: () => set((state) => ({ documentsDecoded: state.documentsDecoded + 1 })),
 
+      // Feature Slice
+      lastResult: null,
+      setLastResult: (lastResult) => set({ lastResult }),
       nyayaScore: null,
       setNyayaScore: (nyayaScore) => set({ nyayaScore }),
-
       policeMode: false,
       setPoliceMode: (policeMode) => set({ policeMode }),
 
-      backendOnline: false,
-      setBackendOnline: (backendOnline) => set({ backendOnline }),
+      // Gamification Slice
+      totalXP: 0,
+      activityLog: [],
+      activeDays: [],
+      voiceQueriesCount: 0,
+      incrementVoiceQueries: () => set((state) => ({ voiceQueriesCount: state.voiceQueriesCount + 1 })),
+      logActivity: (entry) => set((state) => {
+        const today = new Date().toISOString().split('T')[0]
+        const newEntry: ActivityEntry = {
+          ...entry,
+          id: `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+          timestamp: new Date().toISOString(),
+        }
+        return {
+          totalXP: state.totalXP + entry.xpEarned,
+          activityLog: [newEntry, ...state.activityLog].slice(0, 50), // keep last 50
+          activeDays: state.activeDays.includes(today)
+            ? state.activeDays
+            : [...state.activeDays, today].slice(-30), // keep last 30 days
+        }
+      }),
     }),
     {
       name: 'nyayamitra-store',
@@ -120,6 +158,10 @@ export const useAppStore = create<AppState>()(
         decodedClauses: state.decodedClauses,
         documentsDecoded: state.documentsDecoded,
         nyayaScore: state.nyayaScore,
+        totalXP: state.totalXP,
+        activityLog: state.activityLog,
+        activeDays: state.activeDays,
+        voiceQueriesCount: state.voiceQueriesCount,
       }),
     }
   )

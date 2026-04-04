@@ -1,35 +1,14 @@
-// ClauseCard — displays a single legal clause with risk analysis
+// ClauseCard — Government light theme
 import { useState } from 'react'
 import { ChevronDown, ChevronUp, ExternalLink, AlertTriangle, CheckCircle, AlertCircle } from 'lucide-react'
 import type { ClauseData } from '@/services/api'
 
-interface ClauseCardProps {
-  clause: ClauseData
-  index: number
-}
+interface ClauseCardProps { clause: ClauseData; index: number }
 
 const RISK_CONFIG = {
-  illegal: {
-    badge: 'badge-illegal',
-    icon: AlertTriangle,
-    label: 'Illegal',
-    border: 'border-red-400/30',
-    glow: 'rgba(248,113,113,0.05)',
-  },
-  caution: {
-    badge: 'badge-caution',
-    icon: AlertCircle,
-    label: 'Caution',
-    border: 'border-yellow-400/30',
-    glow: 'rgba(251,191,36,0.05)',
-  },
-  safe: {
-    badge: 'badge-safe',
-    icon: CheckCircle,
-    label: 'Safe',
-    border: 'border-emerald-400/30',
-    glow: 'rgba(52,211,153,0.05)',
-  },
+  illegal: { badge: 'badge-illegal', icon: AlertTriangle, label: 'Illegal', color: 'var(--red-danger)', border: '1px solid rgba(211,47,47,0.2)', bg: 'var(--red-light)' },
+  caution: { badge: 'badge-caution', icon: AlertCircle, label: 'Caution', color: 'var(--saffron)', border: '1px solid rgba(255,153,51,0.2)', bg: 'var(--saffron-light)' },
+  safe: { badge: 'badge-safe', icon: CheckCircle, label: 'Safe', color: 'var(--green-success)', border: '1px solid rgba(46,125,50,0.2)', bg: 'var(--green-light)' },
 }
 
 export default function ClauseCard({ clause, index }: ClauseCardProps) {
@@ -38,76 +17,38 @@ export default function ClauseCard({ clause, index }: ClauseCardProps) {
   const Icon = config.icon
 
   return (
-    <div
-      id={`clause-card-${index}`}
-      className={`glass-card border ${config.border} overflow-hidden slide-up`}
-      style={{ background: config.glow, animationDelay: `${index * 0.05}s` }}
-    >
-      {/* Header */}
-      <button
-        className="w-full flex items-start justify-between gap-3 p-4 text-left"
-        onClick={() => setExpanded(!expanded)}
-      >
+    <div id={`clause-card-${index}`} className="gov-card-static overflow-hidden slide-up" style={{ border: config.border, animationDelay: `${index * 0.04}s` }}>
+      <button className="w-full flex items-start justify-between gap-3 p-4 text-left" style={{ background: 'none', border: 'none', cursor: 'pointer' }} onClick={() => setExpanded(!expanded)}>
         <div className="flex items-start gap-3 flex-1 min-w-0">
-          <Icon size={18} className="mt-0.5 shrink-0"
-            color={clause.risk === 'illegal' ? '#f87171' : clause.risk === 'caution' ? '#fbbf24' : '#34d399'}
-          />
+          <Icon size={18} className="mt-0.5 shrink-0" style={{ color: config.color }} />
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap mb-1">
-              <span className={config.badge}>
-                {config.label}
-              </span>
-              <span className="text-xs text-slate-500">
-                {clause.law_act} § {clause.law_section}
-              </span>
+              <span className={config.badge}>{config.label}</span>
+              <span style={{ fontSize: '0.8125rem', color: 'var(--text-secondary)' }}>{clause.law_act} § {clause.law_section}</span>
             </div>
-            <p className="text-sm text-slate-300 leading-relaxed line-clamp-2">
-              {clause.clause}
-            </p>
+            <p style={{ fontSize: '0.875rem', color: 'var(--text-primary)', lineHeight: 1.5 }} className="line-clamp-2">{clause.clause}</p>
           </div>
         </div>
-        {expanded ? (
-          <ChevronUp size={16} className="text-slate-500 shrink-0 mt-1" />
-        ) : (
-          <ChevronDown size={16} className="text-slate-500 shrink-0 mt-1" />
-        )}
+        {expanded ? <ChevronUp size={16} style={{ color: 'var(--text-muted)' }} className="shrink-0 mt-1" /> : <ChevronDown size={16} style={{ color: 'var(--text-muted)' }} className="shrink-0 mt-1" />}
       </button>
-
-      {/* Expanded content */}
       {expanded && (
-        <div className="px-4 pb-4 space-y-3 border-t border-white/5 pt-3">
-          {/* Hindi explanation */}
-          <div className="rounded-xl p-3" style={{ background: 'rgba(255,255,255,0.04)' }}>
-            <p className="text-xs text-slate-500 mb-1 font-medium">हिंदी व्याख्या</p>
-            <p className="text-sm text-slate-300" style={{ fontFamily: "'Noto Sans Devanagari', sans-serif" }}>
-              {clause.plain_hindi}
-            </p>
+        <div className="px-4 pb-4 space-y-3 pt-3" style={{ borderTop: '1px solid var(--border)' }}>
+          <div className="rounded-xl p-3" style={{ background: 'var(--bg-page)' }}>
+            <p style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: 4 }}>हिंदी व्याख्या</p>
+            <p style={{ fontSize: '0.875rem', color: 'var(--text-primary)', fontFamily: "'Noto Sans Devanagari', sans-serif" }}>{clause.plain_hindi}</p>
           </div>
-
-          {/* English explanation */}
-          <div className="rounded-xl p-3" style={{ background: 'rgba(255,255,255,0.04)' }}>
-            <p className="text-xs text-slate-500 mb-1 font-medium">Plain English</p>
-            <p className="text-sm text-slate-300">{clause.plain_english}</p>
+          <div className="rounded-xl p-3" style={{ background: 'var(--bg-page)' }}>
+            <p style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: 4 }}>Plain English</p>
+            <p style={{ fontSize: '0.875rem', color: 'var(--text-primary)' }}>{clause.plain_english}</p>
           </div>
-
-          {/* Counter clause */}
           {clause.counter_clause && (
-            <div className="rounded-xl p-3 border border-emerald-400/20"
-              style={{ background: 'rgba(52,211,153,0.05)' }}>
-              <p className="text-xs text-emerald-400 mb-1 font-medium">Suggested Replacement</p>
-              <p className="text-sm text-slate-300 italic">{clause.counter_clause}</p>
+            <div className="rounded-xl p-3" style={{ background: 'var(--green-light)', border: '1px solid rgba(46,125,50,0.15)' }}>
+              <p style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--green-success)', marginBottom: 4 }}>Suggested Replacement</p>
+              <p style={{ fontSize: '0.875rem', color: 'var(--text-primary)', fontStyle: 'italic' }}>{clause.counter_clause}</p>
             </div>
           )}
-
-          {/* Source link */}
-          <a
-            href={clause.source_url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 text-xs text-amber-400 hover:text-amber-300 transition-colors"
-          >
-            <ExternalLink size={12} />
-            View on indiacode.nic.in
+          <a href={clause.source_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 transition-colors" style={{ fontSize: '0.875rem', color: 'var(--blue-secondary)', textDecoration: 'none' }}>
+            <ExternalLink size={12} /> View on indiacode.nic.in
           </a>
         </div>
       )}

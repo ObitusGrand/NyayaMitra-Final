@@ -8,6 +8,22 @@ const api = axios.create({
   timeout: 60000,
 })
 
+// Centralized Interceptors
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    // Basic global intercept — ideally hooked into a Zustand global toast queue
+    if (!error.response) {
+      console.error('Network/Server error detected:', error)
+      // Custom event to signify backend offline status
+      window.dispatchEvent(new CustomEvent('nyaya-api-error', { detail: 'Network error. Please check your connection' }))
+    } else if (error.response.status >= 500) {
+      window.dispatchEvent(new CustomEvent('nyaya-api-error', { detail: 'Backend server is currently experiencing issues.' }))
+    }
+    return Promise.reject(error)
+  }
+)
+
 // ── Types ────────────────────────────────────────────────────────────────────
 export interface VoiceResponse {
   question_text: string
