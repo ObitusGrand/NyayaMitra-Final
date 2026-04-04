@@ -1,11 +1,8 @@
 # Nixpacks configuration for Railway deployment
-[phases.setup]
-  nixPkgs = ["python311"]
-
-[phases.install]
-  cmds = ["pip install -r requirements.txt"]
+providers = ["python"]
 
 [phases.build]
+  dependsOn = ["install"]
   cmds = ["python -m rag.load_statutes"]
 
 [start]
