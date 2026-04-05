@@ -42,10 +42,19 @@ for o in _dev_origins:
     if o not in ALLOWED_ORIGINS:
         ALLOWED_ORIGINS.append(o)
 
+_native_origins = [
+    "capacitor://localhost",
+    "http://localhost",
+    "https://localhost",
+]
+for o in _native_origins:
+    if o not in ALLOWED_ORIGINS:
+        ALLOWED_ORIGINS.append(o)
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=ALLOWED_ORIGINS,
-    allow_credentials=True,
+    allow_origins=["*"],
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
